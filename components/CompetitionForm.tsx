@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { competitionFormSchema, type CompetitionFormInput } from '@/lib/validations';
@@ -19,14 +19,20 @@ export function CompetitionForm({ competitionType }: CompetitionFormProps) {
     message: string;
   } | null>(null);
 
+  // File refs
+  const studentIdsScanRef = useRef<HTMLInputElement>(null);
+  const paymentProofRef = useRef<HTMLInputElement>(null);
+  const twibbonProofRef = useRef<HTMLInputElement>(null);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<CompetitionFormInput>({
     resolver: zodResolver(competitionFormSchema),
-    mode: 'onBlur',
+    mode: 'onChange',
     defaultValues: {
       competitionType,
     },
@@ -37,6 +43,26 @@ export function CompetitionForm({ competitionType }: CompetitionFormProps) {
     setSubmitStatus(null);
 
     try {
+      // Manual file validation
+      const validateFile = (file: any, fieldName: string) => {
+        if (!file) {
+          throw new Error(`${fieldName} is required`);
+        }
+        if (!(file instanceof File)) {
+          throw new Error(`${fieldName} is not a valid file`);
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          throw new Error(`${fieldName} size must be less than 10MB`);
+        }
+        if (file.type !== 'application/pdf') {
+          throw new Error(`${fieldName} must be a PDF file`);
+        }
+      };
+
+      validateFile(data.studentIdsScan, 'Student IDs Scan');
+      validateFile(data.paymentProof, 'Payment Proof');
+      validateFile(data.twibbonProof, 'Twibbon Proof');
+
       const formData = new FormData();
 
       // Add team info
@@ -75,12 +101,20 @@ export function CompetitionForm({ competitionType }: CompetitionFormProps) {
       formData.append('paymentProof', data.paymentProof);
       formData.append('twibbonProof', data.twibbonProof);
 
+      console.log('Submitting form...', {
+        teamName: data.teamName,
+        studentIdsScan: data.studentIdsScan?.name,
+        paymentProof: data.paymentProof?.name,
+        twibbonProof: data.twibbonProof?.name,
+      });
+
       const response = await fetch('/api/submit-competition', {
         method: 'POST',
         body: formData,
       });
 
       const result = await response.json();
+      console.log('Response:', result);
 
       if (!response.ok) {
         throw new Error(result.message || 'Failed to submit form');
@@ -94,6 +128,7 @@ export function CompetitionForm({ competitionType }: CompetitionFormProps) {
       reset();
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An error occurred';
+      console.error('Submit error:', message);
       setSubmitStatus({
         type: 'error',
         message,
@@ -219,10 +254,24 @@ export function CompetitionForm({ competitionType }: CompetitionFormProps) {
                 id="studentIdsScan"
                 type="file"
                 accept=".pdf"
-                {...register('studentIdsScan')}
+                ref={studentIdsScanRef}
+                {...register('studentIdsScan', {
+                  onChange: (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setValue('studentIdsScan', file);
+                      console.log('File selected:', file.name);
+                    }
+                  },
+                })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
               />
               <p className="text-gray-500 text-sm mt-1">Scan all 3 student IDs into one PDF (max 10MB)</p>
+              {watch('studentIdsScan') && (
+                <p className="text-green-600 text-sm mt-2">
+                  ✓ Selected: {(watch('studentIdsScan') as any)?.name || 'File selected'}
+                </p>
+              )}
               {errors.studentIdsScan && (
                 <p className="text-red-500 text-sm mt-1">{errors.studentIdsScan.message}</p>
               )}
@@ -237,10 +286,24 @@ export function CompetitionForm({ competitionType }: CompetitionFormProps) {
                 id="paymentProof"
                 type="file"
                 accept=".pdf"
-                {...register('paymentProof')}
+                ref={paymentProofRef}
+                {...register('paymentProof', {
+                  onChange: (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setValue('paymentProof', file);
+                      console.log('File selected:', file.name);
+                    }
+                  },
+                })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
               />
               <p className="text-gray-500 text-sm mt-1">Max 10MB</p>
+              {watch('paymentProof') && (
+                <p className="text-green-600 text-sm mt-2">
+                  ✓ Selected: {(watch('paymentProof') as any)?.name || 'File selected'}
+                </p>
+              )}
               {errors.paymentProof && (
                 <p className="text-red-500 text-sm mt-1">{errors.paymentProof.message}</p>
               )}
@@ -255,10 +318,24 @@ export function CompetitionForm({ competitionType }: CompetitionFormProps) {
                 id="twibbonProof"
                 type="file"
                 accept=".pdf"
-                {...register('twibbonProof')}
+                ref={twibbonProofRef}
+                {...register('twibbonProof', {
+                  onChange: (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setValue('twibbonProof', file);
+                      console.log('File selected:', file.name);
+                    }
+                  },
+                })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
               />
               <p className="text-gray-500 text-sm mt-1">Max 10MB</p>
+              {watch('twibbonProof') && (
+                <p className="text-green-600 text-sm mt-2">
+                  ✓ Selected: {(watch('twibbonProof') as any)?.name || 'File selected'}
+                </p>
+              )}
               {errors.twibbonProof && (
                 <p className="text-red-500 text-sm mt-1">{errors.twibbonProof.message}</p>
               )}

@@ -5,18 +5,6 @@
 import { z } from 'zod';
 
 // ============================================================
-// FILE VALIDATION
-// ============================================================
-const pdfFileSchema = z
-  .instanceof(File)
-  .refine((file) => file.size <= 10 * 1024 * 1024, {
-    message: 'File size must be less than 10MB',
-  })
-  .refine((file) => file.type === 'application/pdf', {
-    message: 'File must be a PDF',
-  });
-
-// ============================================================
 // STUDENT INFO SCHEMA (Shared for all students)
 // ============================================================
 const studentInfoSchema = z.object({
@@ -49,6 +37,7 @@ const studentInfoSchema = z.object({
 
 // ============================================================
 // COMPETITION FORM VALIDATION SCHEMA (Multi-step form)
+// NOTE: File validation is done manually in component, not in Zod
 // ============================================================
 export const competitionFormSchema = z.object({
   // Step 1: Team Name and Team Leader
@@ -64,10 +53,10 @@ export const competitionFormSchema = z.object({
   // Step 3: Student 3
   student3: studentInfoSchema,
 
-  // Step 4: File uploads
-  studentIdsScan: pdfFileSchema,
-  paymentProof: pdfFileSchema,
-  twibbonProof: pdfFileSchema,
+  // Step 4: File uploads (type: any, validation done manually in component)
+  studentIdsScan: z.any(),
+  paymentProof: z.any(),
+  twibbonProof: z.any(),
 
   competitionType: z.enum(['innovative-essay', 'national-tender'], {
     message: 'Please select a valid competition type',
@@ -84,3 +73,26 @@ export const eventFormSchema = z.object({
 });
 
 export type EventFormInput = z.infer<typeof eventFormSchema>;
+
+// ============================================================
+// MANUAL FILE VALIDATION HELPER (Use in component)
+// ============================================================
+export function validateFile(file: any): { valid: boolean; error?: string } {
+  if (!file) {
+    return { valid: false, error: 'File is required' };
+  }
+
+  if (!(file instanceof File)) {
+    return { valid: false, error: 'Invalid file object' };
+  }
+
+  if (file.size > 10 * 1024 * 1024) {
+    return { valid: false, error: 'File size must be less than 10MB' };
+  }
+
+  if (file.type !== 'application/pdf') {
+    return { valid: false, error: 'File must be a PDF' };
+  }
+
+  return { valid: true };
+}
