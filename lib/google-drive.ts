@@ -1,39 +1,35 @@
-/**
- * Google Drive API utilities for file uploads
- *
- * Note: This is for backend use. Configure OAuth 2.0 credentials in Google Cloud Console.
- * Set up a service account for server-side uploads, or use OAuth 2.0 flow for user uploads.
- */
-
-import { google, Auth } from 'googleapis';
+import { google } from 'googleapis';
 import { GoogleDriveUploadResponse } from './types';
 
 let drive: ReturnType<typeof google.drive>;
 
-/**
- * Initialize Google Drive API client
- * Uses service account credentials from environment variables
- */
 export function initializeDriveClient() {
-  const serviceAccountKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  const refreshToken = process.env.GOOGLE_REFRESH_TOKEN;
 
-  if (!serviceAccountKey) {
-    throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY environment variable is not set');
+  if (!clientId || !clientSecret || !refreshToken) {
+    throw new Error(
+      'Missing GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / GOOGLE_REFRESH_TOKEN in env'
+    );
   }
 
-  try {
-    const credentials = JSON.parse(serviceAccountKey);
-    const auth = new google.auth.GoogleAuth({
-      credentials,
-      scopes: ['https://www.googleapis.com/auth/drive'],
-    });
+  const oauth2Client = new google.auth.OAuth2(
+    clientId,
+    clientSecret,
+    'http://localhost:3000/api/auth/callback'
+  );
 
-    drive = google.drive({ version: 'v3', auth });
-    return drive;
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    throw new Error(`Failed to initialize Google Drive client: ${message}`);
-  }
+  oauth2Client.setCredentials({
+    refresh_token: refreshToken,
+  });
+
+  drive = google.drive({
+    version: 'v3',
+    auth: oauth2Client,
+  });
+
+  return drive;
 }
 
 /**
@@ -49,8 +45,6 @@ export async function uploadFileToDrive(
     if (!drive) {
       initializeDriveClient();
     }
-
-    console.log('Uploading file:', fileName, 'to folder:', folderId);
 
     const fileMetadata: any = {
       name: fileName,
@@ -85,7 +79,13 @@ export async function uploadFileToDrive(
       mimeType: mimeType_,
       webViewLink,
     };
-  } catch (error) {
+  } catch (error: any) {
+    console.error('Google Drive upload error details:', {
+      message: error?.message,
+      code: error?.code,
+      errors: error?.errors,
+      response: error?.response?.data,
+    });
     const message = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Google Drive upload failed: ${message}`);
   }
