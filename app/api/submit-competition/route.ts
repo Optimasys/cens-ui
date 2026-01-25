@@ -82,22 +82,38 @@ export async function POST(request: NextRequest) {
 
     const validData = validationResult.data;
 
+    // Get folder ID from environment
+    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+    if (!folderId) {
+      console.error('GOOGLE_DRIVE_FOLDER_ID environment variable is not set');
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Server configuration error: Google Drive folder not configured',
+        },
+        { status: 500 }
+      );
+    }
+
     // Upload files to Google Drive
     const fileUploadPromises = [
       uploadFileToDrive(
         await fileToBuffer(validData.studentIdsScan),
         generateUniqueFileName(validData.studentIdsScan.name, 'student-ids'),
-        validData.studentIdsScan.type
+        validData.studentIdsScan.type,
+        folderId
       ),
       uploadFileToDrive(
         await fileToBuffer(validData.paymentProof),
         generateUniqueFileName(validData.paymentProof.name, 'payment-proof'),
-        validData.paymentProof.type
+        validData.paymentProof.type,
+        folderId
       ),
       uploadFileToDrive(
         await fileToBuffer(validData.twibbonProof),
         generateUniqueFileName(validData.twibbonProof.name, 'twibbon-proof'),
-        validData.twibbonProof.type
+        validData.twibbonProof.type,
+        folderId
       ),
     ];
 

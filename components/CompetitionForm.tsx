@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { competitionFormSchema, type CompetitionFormInput } from '@/lib/validations';
@@ -19,10 +19,16 @@ export function CompetitionForm({ competitionType }: CompetitionFormProps) {
     message: string;
   } | null>(null);
 
-  // File refs
-  const studentIdsScanRef = useRef<HTMLInputElement>(null);
-  const paymentProofRef = useRef<HTMLInputElement>(null);
-  const twibbonProofRef = useRef<HTMLInputElement>(null);
+  // Track selected files for display
+  const [selectedFiles, setSelectedFiles] = useState<{
+    studentIdsScan: File | null;
+    paymentProof: File | null;
+    twibbonProof: File | null;
+  }>({
+    studentIdsScan: null,
+    paymentProof: null,
+    twibbonProof: null,
+  });
 
   const {
     register,
@@ -126,6 +132,7 @@ export function CompetitionForm({ competitionType }: CompetitionFormProps) {
       });
       setCurrentStep(1);
       reset();
+      setSelectedFiles({ studentIdsScan: null, paymentProof: null, twibbonProof: null });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An error occurred';
       console.error('Submit error:', message);
@@ -254,26 +261,23 @@ export function CompetitionForm({ competitionType }: CompetitionFormProps) {
                 id="studentIdsScan"
                 type="file"
                 accept=".pdf"
-                ref={studentIdsScanRef}
-                {...register('studentIdsScan', {
-                  onChange: (e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setValue('studentIdsScan', file);
-                      console.log('File selected:', file.name);
-                    }
-                  },
-                })}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setValue('studentIdsScan', file);
+                    setSelectedFiles(prev => ({ ...prev, studentIdsScan: file }));
+                  }
+                }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
               />
               <p className="text-gray-500 text-sm mt-1">Scan all 3 student IDs into one PDF (max 10MB)</p>
-              {watch('studentIdsScan') && (
+              {selectedFiles.studentIdsScan && (
                 <p className="text-green-600 text-sm mt-2">
-                  ✓ Selected: {(watch('studentIdsScan') as any)?.name || 'File selected'}
+                  ✓ Selected: {selectedFiles.studentIdsScan.name}
                 </p>
               )}
               {errors.studentIdsScan && (
-                <p className="text-red-500 text-sm mt-1">{errors.studentIdsScan.message}</p>
+                <p className="text-red-500 text-sm mt-1">{String(errors.studentIdsScan.message)}</p>
               )}
             </div>
 
@@ -286,26 +290,23 @@ export function CompetitionForm({ competitionType }: CompetitionFormProps) {
                 id="paymentProof"
                 type="file"
                 accept=".pdf"
-                ref={paymentProofRef}
-                {...register('paymentProof', {
-                  onChange: (e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setValue('paymentProof', file);
-                      console.log('File selected:', file.name);
-                    }
-                  },
-                })}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setValue('paymentProof', file);
+                    setSelectedFiles(prev => ({ ...prev, paymentProof: file }));
+                  }
+                }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
               />
               <p className="text-gray-500 text-sm mt-1">Max 10MB</p>
-              {watch('paymentProof') && (
+              {selectedFiles.paymentProof && (
                 <p className="text-green-600 text-sm mt-2">
-                  ✓ Selected: {(watch('paymentProof') as any)?.name || 'File selected'}
+                  ✓ Selected: {selectedFiles.paymentProof.name}
                 </p>
               )}
               {errors.paymentProof && (
-                <p className="text-red-500 text-sm mt-1">{errors.paymentProof.message}</p>
+                <p className="text-red-500 text-sm mt-1">{String(errors.paymentProof.message)}</p>
               )}
             </div>
 
@@ -318,26 +319,23 @@ export function CompetitionForm({ competitionType }: CompetitionFormProps) {
                 id="twibbonProof"
                 type="file"
                 accept=".pdf"
-                ref={twibbonProofRef}
-                {...register('twibbonProof', {
-                  onChange: (e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setValue('twibbonProof', file);
-                      console.log('File selected:', file.name);
-                    }
-                  },
-                })}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setValue('twibbonProof', file);
+                    setSelectedFiles(prev => ({ ...prev, twibbonProof: file }));
+                  }
+                }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
               />
               <p className="text-gray-500 text-sm mt-1">Max 10MB</p>
-              {watch('twibbonProof') && (
+              {selectedFiles.twibbonProof && (
                 <p className="text-green-600 text-sm mt-2">
-                  ✓ Selected: {(watch('twibbonProof') as any)?.name || 'File selected'}
+                  ✓ Selected: {selectedFiles.twibbonProof.name}
                 </p>
               )}
               {errors.twibbonProof && (
-                <p className="text-red-500 text-sm mt-1">{errors.twibbonProof.message}</p>
+                <p className="text-red-500 text-sm mt-1">{String(errors.twibbonProof.message)}</p>
               )}
             </div>
           </div>

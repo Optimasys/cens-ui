@@ -25,7 +25,7 @@ export function initializeDriveClient() {
     const credentials = JSON.parse(serviceAccountKey);
     const auth = new google.auth.GoogleAuth({
       credentials,
-      scopes: ['https://www.googleapis.com/auth/drive.file'],
+      scopes: ['https://www.googleapis.com/auth/drive'],
     });
 
     drive = google.drive({ version: 'v3', auth });
@@ -50,9 +50,10 @@ export async function uploadFileToDrive(
       initializeDriveClient();
     }
 
+    console.log('Uploading file:', fileName, 'to folder:', folderId);
+
     const fileMetadata: any = {
       name: fileName,
-      mimeType,
     };
 
     if (folderId) {
@@ -66,6 +67,7 @@ export async function uploadFileToDrive(
         body: require('stream').Readable.from(fileBuffer),
       },
       fields: 'id,name,mimeType,webViewLink',
+      supportsAllDrives: true,
     });
 
     const fileId = response.data.id;
