@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState } from 'react';
@@ -107,20 +108,12 @@ export function CompetitionForm({ competitionType }: CompetitionFormProps) {
       formData.append('paymentProof', data.paymentProof);
       formData.append('twibbonProof', data.twibbonProof);
 
-      console.log('Submitting form...', {
-        teamName: data.teamName,
-        studentIdsScan: data.studentIdsScan?.name,
-        paymentProof: data.paymentProof?.name,
-        twibbonProof: data.twibbonProof?.name,
-      });
-
       const response = await fetch('/api/submit-competition', {
         method: 'POST',
         body: formData,
       });
 
       const result = await response.json();
-      console.log('Response:', result);
 
       if (!response.ok) {
         throw new Error(result.message || 'Failed to submit form');
@@ -255,7 +248,7 @@ export function CompetitionForm({ competitionType }: CompetitionFormProps) {
             {/* Student IDs Scan */}
             <div>
               <label htmlFor="studentIdsScan" className="block text-sm font-medium text-gray-700 mb-2">
-                Compiled Scan of Student's IDs (PDF) *
+                Compiled Scan of Student&apos;s IDs (PDF) *
               </label>
               <input
                 id="studentIdsScan"

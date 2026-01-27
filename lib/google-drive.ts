@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { google } from 'googleapis';
 import { GoogleDriveUploadResponse } from './types';
 
@@ -69,7 +71,7 @@ export async function uploadFileToDrive(
     const mimeType_ = response.data.mimeType;
     const webViewLink = response.data.webViewLink;
 
-    if (!fileId || !webViewLink) {
+    if (!fileId || !webViewLink || !fileName_ || !mimeType_) {
       throw new Error('Failed to get upload response data');
     }
 

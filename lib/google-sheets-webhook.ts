@@ -11,15 +11,26 @@ import axios from 'axios';
  * Payload Types
  * ======================================================= */
 
+export type StudentPayload = {
+  fullName: string;
+  nim: string;
+  phoneNumber: string;
+  lineId: string;
+  email: string;
+  university: string;
+  major: string;
+};
+
 export type CompetitionSheetsPayload = {
   submissionType: 'competition';
   timestamp: string;
 
   teamName: string;
   competitionType: string;
-  teamLeaderEmail: string;
-  teamLeaderName: string;
-  studentCount: number;
+
+  teamLeader: StudentPayload;
+  student2: StudentPayload;
+  student3: StudentPayload;
 
   fileUrls: {
     studentIdsScan: string;
@@ -27,6 +38,7 @@ export type CompetitionSheetsPayload = {
     twibbonProof: string;
   };
 };
+
 
 // Future extension: add EventSheetsPayload here
 export type SheetsPayload = CompetitionSheetsPayload;

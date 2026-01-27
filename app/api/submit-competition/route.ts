@@ -168,9 +168,11 @@ export async function POST(request: NextRequest) {
       const sheetsData = formatDataForSheets('competition', {
         teamName: validData.teamName,
         competitionType: validData.competitionType,
-        teamLeaderEmail: validData.teamLeader.email,
-        teamLeaderName: validData.teamLeader.fullName,
-        studentCount: 3,
+
+        teamLeader: validData.teamLeader,
+        student2: validData.student2,
+        student3: validData.student3,
+
         fileUrls: {
           studentIdsScan: driveResponses[0].webViewLink,
           paymentProof: driveResponses[1].webViewLink,

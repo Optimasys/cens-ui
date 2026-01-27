@@ -1,22 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const madeTommy = localFont({
+  src: [
+    {
+      path: "../public/fonts/MadeTommy-Medium.woff2",
+      weight: "500",
+      style: "normal",
+    },
+  ],
+  variable: "--font-made-tommy",
+  display: "swap",
+  fallback: ["Arial", "Helvetica", "sans-serif"],
 });
 
 export const metadata: Metadata = {
-  title: "CENS - Competition & Events Management System",
-  description: "Register for competitions and events through CENS",
+  title: "CENS Universitas Indonesia",
+  description: "The Biggest and Most Innovative Civil Engineering Series of Events Held by Universitas Indonesia",
 };
 
 export default function RootLayout({
@@ -26,13 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
-      >
+      <body className={`${madeTommy.variable} antialiased flex flex-col min-h-screen`}>
         <Navbar />
-        <main className="flex-grow">
-          {children}
-        </main>
+        <main className="flex-grow">{children}</main>
         <Footer />
       </body>
     </html>
