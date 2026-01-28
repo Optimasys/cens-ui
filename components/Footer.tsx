@@ -80,7 +80,7 @@ export function Footer() {
           <div className="flex justify-center md:translate-y-12">
             <div className="flex items-center gap-6 md:gap-10">
               <SocialLink
-                href="https://www.instagram.com/hipercensi"
+                href="https://www.instagram.com/cens.ui"
                 label="Instagram"
               />
               <SocialLink
