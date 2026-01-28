@@ -7,6 +7,11 @@ import { Footer } from "@/components/Footer";
 const madeTommy = localFont({
   src: [
     {
+      path: "../public/fonts/MadeTommy-Light.woff2",
+      weight: "300",
+      style: "normal",
+    },
+    {
       path: "../public/fonts/MadeTommy-Medium.woff2",
       weight: "500",
       style: "normal",
