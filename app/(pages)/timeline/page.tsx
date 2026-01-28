@@ -6,7 +6,7 @@ import Link from "next/link";
 interface TimelineSectionProps {
   title: string;
   date: string;
-  description: string;
+  description: string | string[];
   imageName: string;
   buttons?: Array<{ label: string; href: string }>;
 }
@@ -19,7 +19,7 @@ function TimelineSection({
   buttons,
 }: TimelineSectionProps) {
   return (
-    <div className="relative mb-24">
+    <div className="relative mb-16 sm:mb-20 md:mb-24">
       {/* Card background */}
       <div
         className="
@@ -33,7 +33,7 @@ function TimelineSection({
         "
       />
 
-      <div className="relative z-10 px-4 py-6 sm:px-8 md:px-10 lg:px-14 md:py-10">
+      <div className="relative z-10 px-6 py-8 sm:px-10 md:px-12 lg:px-14 md:py-10">
         {/* Header (centered) */}
         <div className="text-center mb-6 sm:mb-8">
           <h3
@@ -53,7 +53,7 @@ function TimelineSection({
             className="
               text-base sm:text-lg md:text-xl text-white
               font-[var(--font-made-tommy)]
-              font-medium
+              font-light
               [filter:drop-shadow(0_2px_2px_rgba(0,0,0,0.25))]
               mb-4
             "
@@ -79,19 +79,43 @@ function TimelineSection({
 
           {/* Description + Buttons */}
           <div className="flex-1 w-full">
-            <p
-              className="
-                text-base sm:text-lg md:text-xl text-white
-                font-[var(--font-made-tommy)]
-                font-medium
-                leading-relaxed
-                text-justify
-                mb-6 md:mb-8
-                [filter:drop-shadow(0_2px_2px_rgba(0,0,0,0.25))]
-              "
-            >
-              {description}
-            </p>
+            {Array.isArray(description) ? (
+              <>
+                {description.map((para, index) => (
+                  <div key={index}>
+                    <p
+                      className="
+                        text-base sm:text-lg md:text-xl text-white
+                        font-[var(--font-made-tommy)]
+                        font-light
+                        leading-relaxed
+                        text-justify
+                        mb-4 md:mb-6
+                        [filter:drop-shadow(0_2px_2px_rgba(0,0,0,0.25))]
+                      "
+                    >
+                      {para}
+                    </p>
+                    {index < description.length - 1 && <div className="h-2" />}
+                  </div>
+                ))}
+                <div className="mb-6 md:mb-8" />
+              </>
+            ) : (
+              <p
+                className="
+                  text-base sm:text-lg md:text-xl text-white
+                  font-[var(--font-made-tommy)]
+                  font-light
+                  leading-relaxed
+                  text-justify
+                  mb-6 md:mb-8
+                  [filter:drop-shadow(0_2px_2px_rgba(0,0,0,0.25))]
+                "
+              >
+                {description}
+              </p>
+            )}
 
             {buttons && (
               <div className="flex gap-3 sm:gap-4 flex-wrap">
@@ -131,8 +155,10 @@ export default function Timeline() {
     {
       title: "ROADSHOW",
       date: "February – March 2026",
-      description:
-        "A series of publication events conducted to promote our Competition. Campus Roadshow designed to reach a large national audience will visit many universities over Indonesia.",
+      description: [
+        "A series of publication events conducted to promote our Competition.",
+        "Campus Roadshow designed to reach a large national audience will visit many universities over Indonesia.",
+      ],
       imageName: "timeline-roadshow.png",
     },
     {
@@ -218,11 +244,11 @@ export default function Timeline() {
         <h1
           className="
             text-center
-            text-2xl md:text-4xl lg:text-5xl
+            text-2xl sm:text-3xl md:text-4xl lg:text-5xl
             font-extrabold
             font-[var(--font-gretaros)]
             tracking-[10px]
-            mb-28
+            mb-14 sm:mb-20 md:mb-24
             bg-[radial-gradient(53.96%_79.16%_at_67.53%_15.27%,#FFFFFF_0%,#F4E5A2_100%)]
             bg-clip-text text-transparent
             [filter:drop-shadow(0px_3.9px_4.6px_rgba(0,0,0,0.25))]
@@ -231,7 +257,7 @@ export default function Timeline() {
           EVENT&apos;S TIMELINE
         </h1>
 
-        <div className="space-y-28">
+        <div className="space-y-16 sm:space-y-20 md:space-y-28">
           {timelineData.map((section) => (
             <TimelineSection key={section.title} {...section} />
           ))}
