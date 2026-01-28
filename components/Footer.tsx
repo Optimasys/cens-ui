@@ -74,13 +74,13 @@ export function Footer() {
         </div>
 
         {/* ================= Bottom Section ================= */}
-        <div className="relative md:absolute md:bottom-2 left-6 right-6 lg:left-16 lg:right-16 flex flex-col mt-10 md:mt-0">
-          
+        <div className="relative md:absolute md:bottom-2 md:left-6 md:right-6 lg:left-16 lg:right-16 flex flex-col gap-6 md:gap-0 mt-12 md:mt-0">
+
           {/* Row 1 - Social Media */}
-          <div className="flex justify-center translate-y-0 md:translate-y-12">
+          <div className="flex justify-center md:translate-y-12">
             <div className="flex items-center gap-6 md:gap-10">
               <SocialLink
-                href="https://www.instagram.com/hipercensi"
+                href="https://www.instagram.com/cens.ui"
                 label="Instagram"
               />
               <SocialLink
@@ -95,7 +95,7 @@ export function Footer() {
           </div>
 
           {/* Row 2 - Copyright + Logo */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col-reverse md:flex-row items-center justify-center md:justify-between gap-4 md:gap-0 text-center md:text-left">
             <p className="text-white text-base font-normal font-[var(--font-made-tommy)] leading-5">
               © 2026 CENS UI
             </p>
@@ -105,7 +105,7 @@ export function Footer() {
               alt="CENS Logo"
               width={193}
               height={109}
-              className="w-32 lg:w-48 h-auto drop-shadow-[0px_2.6px_2.6px_rgba(255,255,255,0.25)]"
+              className="w-24 md:w-32 lg:w-48 h-auto drop-shadow-[0px_2.6px_2.6px_rgba(255,255,255,0.25)]"
             />
           </div>
         </div>

@@ -3,8 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 export function Navbar() {
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [competitionDropdownOpen, setCompetitionDropdownOpen] = useState(false);
   const [eventDropdownOpen, setEventDropdownOpen] = useState(false);
@@ -27,15 +29,17 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-2 xl:gap-6">
-            <NavLink href="/">Home</NavLink>
-            <NavLink href="/about">About US</NavLink>
-            <NavLink href="/timeline">Timeline</NavLink>
+            <NavLink href="/" pathname={pathname}>Home</NavLink>
+            <NavLink href="/about" pathname={pathname}>About US</NavLink>
+            <NavLink href="/timeline" pathname={pathname}>Timeline</NavLink>
 
             {/* Competition Dropdown */}
             <Dropdown
               label="Competition"
               isOpen={competitionDropdownOpen}
               setIsOpen={setCompetitionDropdownOpen}
+              pathname={pathname}
+              activePathPrefix="/competitions"
             >
               <DropdownLink href="/competitions/national-tender">
                 National Tender Competition
@@ -50,6 +54,8 @@ export function Navbar() {
               label="Event"
               isOpen={eventDropdownOpen}
               setIsOpen={setEventDropdownOpen}
+              pathname={pathname}
+              activePathPrefix="/events"
             >
               <DropdownLink href="/events/workshop">Workshop</DropdownLink>
               <DropdownLink href="/events/bootcamp">Bootcamp</DropdownLink>
@@ -58,7 +64,7 @@ export function Navbar() {
               </DropdownLink>
             </Dropdown>
 
-            <NavLink href="/contact">Contact</NavLink>
+            <NavLink href="/contact" pathname={pathname}>Contact</NavLink>
           </div>
 
           {/* Mobile menu button */}
@@ -98,25 +104,28 @@ export function Navbar() {
             <div className="flex flex-col gap-2">
               <MobileNavLink
                 href="/"
+                pathname={pathname}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Home
               </MobileNavLink>
               <MobileNavLink
                 href="/about"
+                pathname={pathname}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About US
               </MobileNavLink>
               <MobileNavLink
                 href="/timeline"
+                pathname={pathname}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Timeline
               </MobileNavLink>
 
               {/* Mobile Competition Dropdown */}
-              <MobileDropdown label="Competition">
+              <MobileDropdown label="Competition" pathname={pathname} activePathPrefix="/competitions">
                 <MobileDropdownLink
                   href="/competitions/national-tender"
                   onClick={() => setMobileMenuOpen(false)}
@@ -132,7 +141,7 @@ export function Navbar() {
               </MobileDropdown>
 
               {/* Mobile Event Dropdown */}
-              <MobileDropdown label="Event">
+              <MobileDropdown label="Event" pathname={pathname} activePathPrefix="/events">
                 <MobileDropdownLink
                   href="/events/workshop"
                   onClick={() => setMobileMenuOpen(false)}
@@ -155,6 +164,7 @@ export function Navbar() {
 
               <MobileNavLink
                 href="/contact"
+                pathname={pathname}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Contact
@@ -170,16 +180,36 @@ export function Navbar() {
 function NavLink({
   href,
   children,
+  pathname,
 }: {
   href: string;
   children: React.ReactNode;
+  pathname: string;
 }) {
+  const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
+
   return (
     <Link
       href={href}
-      className="px-4 py-2 text-white text-base lg:text-lg xl:text-xl font-medium font-[var(--font-made-tommy)] hover:opacity-80 transition-opacity"
+      className={`relative inline-block px-4 py-2 text-white text-base lg:text-lg xl:text-xl font-medium font-[var(--font-made-tommy)] transition-all group ${
+        isActive ? "" : "hover:opacity-80"
+      }`}
+      style={isActive ? { textShadow: "0 0 10px #F4E5A2" } : {}}
     >
       {children}
+      {/* Underline for both active and hover - matches text width */}
+      <span
+        className={`absolute bottom-1 left-1/2 -translate-x-1/2 h-1 rounded-full transition-all ${
+          isActive
+            ? "opacity-100 bg-gradient-to-r from-[#F4E5A2] via-[#6EAF5F] to-[#F4E5A2]"
+            : "opacity-0 group-hover:opacity-100 bg-gradient-to-r from-[#F4E5A2] via-[#6EAF5F] to-[#F4E5A2]"
+        }`}
+        style={
+          isActive || true
+            ? { width: "calc(100% - 2rem)" }
+            : { width: "calc(100% - 2rem)" }
+        }
+      />
     </Link>
   );
 }
@@ -189,21 +219,43 @@ function Dropdown({
   children,
   isOpen,
   setIsOpen,
+  pathname,
+  activePathPrefix,
 }: {
   label: string;
   children: React.ReactNode;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  pathname: string;
+  activePathPrefix: string;
 }) {
+  const isActive = pathname.includes(activePathPrefix);
+
   return (
     <div
       className="relative"
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
     >
-      <button className="flex items-center gap-2 px-4 py-2 text-white text-base lg:text-lg xl:text-xl font-medium font-[var(--font-made-tommy)] hover:opacity-80 transition-opacity">
-        {label}
-        <DropdownArrow />
+      <button
+        className={`relative inline-flex items-center gap-2 px-4 py-2 text-white text-base lg:text-lg xl:text-xl font-medium font-[var(--font-made-tommy)] transition-all group ${
+          isActive ? "" : "hover:opacity-80"
+        }`}
+        style={isActive ? { textShadow: "0 0 10px #F4E5A2" } : {}}
+      >
+        <div className="flex items-center gap-2">
+          {label}
+          <DropdownArrow />
+        </div>
+        {/* Underline for both active and hover - matches text width */}
+        <span
+          className={`absolute bottom-1 left-1/2 -translate-x-1/2 h-1 rounded-full transition-all ${
+            isActive
+              ? "opacity-100 bg-gradient-to-r from-[#F4E5A2] via-[#6EAF5F] to-[#F4E5A2]"
+              : "opacity-0 group-hover:opacity-100 bg-gradient-to-r from-[#F4E5A2] via-[#6EAF5F] to-[#F4E5A2]"
+          }`}
+          style={{ width: "calc(100% - 2rem)" }}
+        />
       </button>
       <div
         className={`absolute left-1/2 -translate-x-1/2 top-full pt-6 w-60 transition-all duration-200 z-50 ${
@@ -257,16 +309,25 @@ function MobileNavLink({
   href,
   children,
   onClick,
+  pathname,
 }: {
   href: string;
   children: React.ReactNode;
   onClick: () => void;
+  pathname: string;
 }) {
+  const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
+
   return (
     <Link
       href={href}
       onClick={onClick}
-      className="px-4 py-3 text-white text-base font-medium font-[var(--font-made-tommy)] hover:bg-white/10 rounded-lg transition-colors"
+      className={`px-4 py-3 text-white text-base font-medium font-[var(--font-made-tommy)] rounded-lg transition-colors ${
+        isActive
+          ? "bg-white/20"
+          : "hover:bg-white/10"
+      }`}
+      style={isActive ? { textShadow: "0 0 10px #F4E5A2" } : {}}
     >
       {children}
     </Link>
@@ -276,17 +337,27 @@ function MobileNavLink({
 function MobileDropdown({
   label,
   children,
+  pathname,
+  activePathPrefix,
 }: {
   label: string;
   children: React.ReactNode;
+  pathname: string;
+  activePathPrefix: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const isActive = pathname.includes(activePathPrefix);
 
   return (
     <div>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-4 py-3 text-white text-base font-medium font-[var(--font-made-tommy)] hover:bg-white/10 rounded-lg transition-colors"
+        className={`w-full flex items-center justify-between px-4 py-3 text-white text-base font-medium font-[var(--font-made-tommy)] rounded-lg transition-colors ${
+          isActive
+            ? "bg-white/20"
+            : "hover:bg-white/10"
+        }`}
+        style={isActive ? { textShadow: "0 0 10px #F4E5A2" } : {}}
       >
         {label}
         <svg
