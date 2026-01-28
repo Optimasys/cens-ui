@@ -33,15 +33,15 @@ function TimelineSection({
         "
       />
 
-      <div className="relative z-10 px-14 py-10">
+      <div className="relative z-10 px-4 py-6 sm:px-8 md:px-10 lg:px-14 md:py-10">
         {/* Header (centered) */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6 sm:mb-8">
           <h3
             className="
-              text-4xl text-white
+              text-2xl sm:text-3xl md:text-4xl text-white
               font-extrabold
               font-[var(--font-made-tommy)]
-              tracking-[0.25em]
+              tracking-[0.15em] sm:tracking-[0.25em]
               mb-2
               [filter:drop-shadow(0_4px_4px_rgba(0,0,0,0.25))]
             "
@@ -51,8 +51,9 @@ function TimelineSection({
 
           <p
             className="
-              text-xl text-white
+              text-base sm:text-lg md:text-xl text-white
               font-[var(--font-made-tommy)]
+              font-medium
               [filter:drop-shadow(0_2px_2px_rgba(0,0,0,0.25))]
               mb-4
             "
@@ -61,13 +62,13 @@ function TimelineSection({
           </p>
 
           {/* Yellow divider (long & centered) */}
-          <div className="mx-auto w-full max-w-[1000px] h-[9px] bg-[#F4E5A2]" />
+          <div className="mx-auto w-full max-w-[1000px] h-[7px] sm:h-[9px] bg-[#F4E5A2]" />
         </div>
 
         {/* Content */}
-        <div className="flex items-start gap-12">
+        <div className="flex flex-col md:flex-row md:items-start gap-6 md:gap-12">
           {/* Image */}
-          <div className="relative w-80 h-52 rounded-[32px] overflow-hidden flex-shrink-0 bg-transparent">
+          <div className="relative w-full sm:w-64 md:w-80 h-40 sm:h-48 md:h-52 rounded-[32px] overflow-hidden flex-shrink-0 bg-transparent">
             <Image
               src={`/images/${imageName}`}
               alt={title}
@@ -77,14 +78,15 @@ function TimelineSection({
           </div>
 
           {/* Description + Buttons */}
-          <div className="flex-1">
+          <div className="flex-1 w-full">
             <p
               className="
-                text-xl text-white
+                text-base sm:text-lg md:text-xl text-white
                 font-[var(--font-made-tommy)]
+                font-medium
                 leading-relaxed
                 text-justify
-                mb-8
+                mb-6 md:mb-8
                 [filter:drop-shadow(0_2px_2px_rgba(0,0,0,0.25))]
               "
             >
@@ -92,16 +94,17 @@ function TimelineSection({
             </p>
 
             {buttons && (
-              <div className="flex gap-4 flex-wrap">
+              <div className="flex gap-3 sm:gap-4 flex-wrap">
                 {buttons.map((button) => (
                 <Link
                   key={button.href}
                   href={button.href}
                   className="
-                    px-7 py-2.5
+                    px-5 sm:px-7 py-2 sm:py-2.5
                     rounded-[100px]
-                    text-white text-sm
+                    text-white text-xs sm:text-sm
                     font-[var(--font-made-tommy)]
+                    font-medium
                     shadow-[0_4px_4px_rgba(0,0,0,0.25)]
                     transition hover:opacity-90
 
@@ -206,7 +209,7 @@ export default function Timeline() {
         />
       </div>
 
-      {/* Gradient overlays (same as Home) */}
+      {/* Gradient overlays */}
       <div className="absolute inset-0 opacity-70 bg-[linear-gradient(1deg,#E6E9D8_-54.65%,#219ACC_99.39%)]" />
       <div className="absolute inset-0 opacity-40 bg-[linear-gradient(333deg,#219ACC_8.55%,#F4E5A2_71.14%,#219ACC_100%)]" />
 
