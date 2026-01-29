@@ -3,9 +3,7 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 
-/* ===============================
-   DATA (JANGAN DIUBAH)
-================================ */
+/*Data*/
 const aboutItems = [
   {
     key: "cens",
@@ -90,14 +88,10 @@ const aboutItems = [
   },
 ] as const;
 
-/* ===============================
-   TYPES
-================================ */
+/*TYPES*/
 type AboutKey = "cens" | "track" | "testimony";
 
-/* ===============================
-   COMPONENT
-================================ */
+/*COMPONENT*/
 export function AboutBar() {
   const [open, setOpen] = useState<AboutKey | null>(null);
 
@@ -107,9 +101,6 @@ export function AboutBar() {
     testimony: null,
   });
 
-  /* ===============================
-     APPLE-LIKE SMOOTH SCROLL
-  ================================ */
   const smoothScrollTo = (targetY: number, duration = 900) => {
     const startY = window.scrollY;
     const diff = targetY - startY;
@@ -202,7 +193,6 @@ export function AboutBar() {
                   {item.label}
                 </h3>
 
-                {/* ⭐ FIX UTAMA DI SINI */}
                 {item.key === "track" ? (
                   item.content
                 ) : (
