@@ -1,13 +1,28 @@
-export default function About() {
+"use client";
+
+import Image from "next/image";
+import { AboutBar } from "@/components/AboutBar";
+
+export default function AboutPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <h1 className="text-4xl font-bold mb-6">About Us</h1>
-      <p className="text-lg text-gray-600 mb-8">
-        Learn more about CENS and our mission.
-      </p>
-      {/* Placeholder for about page content - awaiting design */}
-      <div className="bg-gray-50 p-8 rounded-lg">
-        <p className="text-gray-700">About page content coming soon...</p>
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Background image */}
+      <div className="absolute inset-0 -z-10">
+        <Image
+          src="/images/About-us.png"
+          alt="About CENS UI Background"
+          fill
+          priority
+          className="object-cover"
+        />
+      </div>
+
+      {/* Optional overlay biar teks kebaca */}
+      <div className="absolute inset-0 -z-10 bg-black/20" />
+
+      {/* Content */}
+      <div className="relative z-10 max-w-6xl mx-auto px-8 py-24">
+        <AboutBar />
       </div>
     </div>
   );

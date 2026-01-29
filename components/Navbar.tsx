@@ -30,7 +30,7 @@ export function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-2 xl:gap-6">
             <NavLink href="/" pathname={pathname}>Home</NavLink>
-            <NavLink href="/about" pathname={pathname}>About US</NavLink>
+            <NavLink href="/about" pathname={pathname}>About Us</NavLink>
             <NavLink href="/timeline" pathname={pathname}>Timeline</NavLink>
 
             {/* Competition Dropdown */}
