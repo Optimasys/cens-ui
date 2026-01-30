@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useRef } from "react";
-import Image from "next/image";
+import { TestimonialSlider } from "@/components/TestimonialSlider";
+
+
 
 /*Data*/
 const aboutItems = [
@@ -79,12 +81,7 @@ const aboutItems = [
   {
     key: "testimony",
     label: "What they say about CENS UI",
-    content: (
-      <p className="text-white text-lg italic leading-relaxed">
-        “CENS UI is a meaningful platform that brings real impact to future
-        infrastructure development in Indonesia.”
-      </p>
-    ),
+    content: (<TestimonialSlider />),
   },
 ] as const;
 
@@ -179,7 +176,7 @@ export function AboutBar() {
               ref={(el) => {sectionRefs.current[item.key] = el;}}
               className={`overflow-hidden transition-all duration-500 ${
                 isOpen ? "max-h-[1000px] mt-6" : "max-h-0"
-              }`}
+                }`}
             >
               <div className="ml-6 pl-6">
                 <h3 className="mb-4 text-3xl md:text-4xl font-bold [font-family:var(--font-gretaros)] tracking-[0.14em] uppercase text-white"
@@ -193,13 +190,16 @@ export function AboutBar() {
                   {item.label}
                 </h3>
 
-                {item.key === "track" ? (
-                  item.content
+                {item.key === "testimony" ? (
+                item.content
+                ) : item.key === "track" ? (
+                item.content
                 ) : (
-                  <div className="px-10 py-8 rounded-sm text-white backdrop-blur-md shadow-[4px_4px_6px_rgba(0,0,0,0.25)] bg-[linear-gradient(90deg,#03695E_0%,#92B286_50%,#F4E5A2_100%)] opacity-75">
+                <div className="px-10 py-8 rounded-sm text-white backdrop-blur-md shadow-[4px_4px_6px_rgba(0,0,0,0.25)] bg-[linear-gradient(90deg,#03695E_0%,#92B286_50%,#F4E5A2_100%)] opacity-75">
                     {item.content}
-                  </div>
+                </div>
                 )}
+
               </div>
             </div>
           </div>
