@@ -52,7 +52,7 @@ export function TestimonialSlider() {
   return (
     <div className="relative mt-1 ml-6 pl-6">
 
-      <div className="relative flex items-center gap-8 pt-10 pb-40 overflow-visible">
+      <div className="relative flex items-center gap-8 pt-10 pb-20 overflow-visible">
 
         {/* PREV */}
         {index > 0 && (
@@ -74,7 +74,7 @@ export function TestimonialSlider() {
             ${direction === "right" ? "animate-appleRight" : "animate-appleLeft"}
         `}>
 
-          {/* CARD (layout kamu TIDAK DIUBAH) */}
+          {/* CARD */}
           <div
             key={index}
             className={`
