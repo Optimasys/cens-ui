@@ -5,7 +5,7 @@ import { TestimonialSlider } from "@/components/TestimonialSlider";
 
 
 
-/*Data*/
+{/*Data*/}
 const aboutItems = [
   {
     key: "cens",
@@ -85,10 +85,10 @@ const aboutItems = [
   },
 ] as const;
 
-/*TYPES*/
+{/*TYPES*/}
 type AboutKey = "cens" | "track" | "testimony";
 
-/*COMPONENT*/
+{/*COMPONENT*/}
 export function AboutBar() {
   const [open, setOpen] = useState<AboutKey | null>(null);
 
