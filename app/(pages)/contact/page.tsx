@@ -2,29 +2,33 @@ import Image from "next/image";
 
 export default function ContactPage() {
   return (
-    <section className="relative min-h-screen w-full overflow-hidden text-white">
+    <section
+      className="relative min-h-screen w-full text-white bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/images/bg-contact.png')" }}
+    >
 
-      {/* ===== BACKGROUND ===== */}
-      <Image
-        src="/images/bg-contact.png"
-        alt="bg"
-        fill
-        priority
-        className="object-cover -z-10"
-      />
 
-      {/* ===== TITLE ===== */}
-      <h1 className="text-center pt-12 text-5xl font-extrabold tracking-widest text-yellow-200 drop-shadow-lg tracking-[0.2em]">
+      {/* TITLE */}
+      <h1 className="text-center pt-12 text-5xl font-extrabold tracking-widest bg-gradient-to-r from-white to-[#F4E5A2] bg-clip-text text-transparent drop-shadow-lg tracking-[0.2em]">
         CONTACT US FOR PARTNERSHIP
       </h1>
 
-      {/* ===== CARD CONTAINER ONLY ===== */}
+      {/* CARD CONTAINER ONLY */}
       <div className="relative max-w-7xl mx-auto h-[600px] -translate-y-0">
 
         {/* CARD */}
         <div className="absolute right-60 top-23 w-[500px] z-10">
-          <div className="p-[4px] rounded-[40px] bg-gradient-to-r from-[#F4E5A2] to-[#6EAF5F] shadow-2xl">
-            <div className="bg-[#3C7F6E]/85 backdrop-blur-sm rounded-[36px] p-10">
+          <div className="p-[4px] rounded-[40px] bg-gradient-to-r from-[#F4E5A2] to-[#6EAF5F] backdrop-blur-xl shadow-2xl">
+
+          {/* GLASS CARD */}
+          <div
+            className="
+              bg-[#03695E]/30
+              rounded-[36px]
+              p-10
+              text-white
+            "
+          >
             <p className="mb-8 text-lg">
               The 23rd CENS UI is open to any kind of partnership from sponsorship to media partnership. 
               If you are interested in partnering with us, reach out to our representative for more information.
@@ -42,7 +46,7 @@ export default function ContactPage() {
         </div>
       </div>
 
-      {/* ===== WOMAN (GLOBAL LAYER) ===== */}
+      {/* WOMAN CP */}
       <Image
         src="/images/cp-woman.png"
         alt="woman"
@@ -51,7 +55,7 @@ export default function ContactPage() {
         className="absolute left-52 bottom-20 z-20"
       />
 
-      {/* ===== WAVE ===== */}
+      {/* WAVE */}
       <div className="absolute bottom-0 left-0 w-full h-[1000px] z-50 pointer-events-none">
       <Image
         src="/images/cp-green-layer.png"
