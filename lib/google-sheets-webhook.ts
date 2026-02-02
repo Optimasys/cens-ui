@@ -22,7 +22,7 @@ export type StudentPayload = {
 };
 
 export type CompetitionSheetsPayload = {
-  submissionType: 'competition';
+  submissionType: 'iec-regis';
   timestamp: string;
 
   teamName: string;
@@ -40,8 +40,24 @@ export type CompetitionSheetsPayload = {
 };
 
 
+export type IecSubmissionSheetsPayload = {
+  submissionType: 'iec-submission';
+  timestamp: string;
+
+  teamName: string;
+  fullName: string;
+  nim: string;
+  phoneNumber: string;
+  lineId: string;
+  email: string;
+  university: string;
+  subtheme: string;
+
+  fileUrl: string;
+};
+
 // Future extension: add EventSheetsPayload here
-export type SheetsPayload = CompetitionSheetsPayload;
+export type SheetsPayload = CompetitionSheetsPayload | IecSubmissionSheetsPayload;
 
 /* =========================================================
  * Trigger Google Sheets Webhook
@@ -103,12 +119,22 @@ export function validateWebhookUrl(url: string): boolean {
  * Format submission data for Google Sheets
  */
 export function formatDataForSheets(
-  submissionType: 'competition',
+  submissionType: 'iec-regis',
   data: Omit<CompetitionSheetsPayload, 'submissionType' | 'timestamp'>
-): CompetitionSheetsPayload {
+): CompetitionSheetsPayload;
+export function formatDataForSheets(
+  submissionType: 'iec-submission',
+  data: Omit<IecSubmissionSheetsPayload, 'submissionType' | 'timestamp'>
+): IecSubmissionSheetsPayload;
+export function formatDataForSheets(
+  submissionType: 'iec-regis' | 'iec-submission',
+  data:
+    | Omit<CompetitionSheetsPayload, 'submissionType' | 'timestamp'>
+    | Omit<IecSubmissionSheetsPayload, 'submissionType' | 'timestamp'>
+): SheetsPayload {
   return {
     submissionType,
     timestamp: new Date().toISOString(),
     ...data,
-  };
+  } as SheetsPayload;
 }

@@ -86,6 +86,52 @@ export async function insertCompetitionSubmission(data: {
 }
 
 /**
+ * Insert an IEC (Innovative Essay Competition) submission into Supabase
+ */
+export async function insertIecSubmission(data: {
+  teamName: string;
+  fullName: string;
+  nim: string;
+  phoneNumber: string;
+  lineId: string;
+  email: string;
+  university: string;
+  subtheme: string;
+  fileId: string;
+  fileUrl: string;
+}) {
+  try {
+    const { data: submission, error } = await supabase
+      .from('iec_submissions')
+      .insert([
+        {
+          team_name: data.teamName,
+          full_name: data.fullName,
+          nim: data.nim,
+          phone_number: data.phoneNumber,
+          line_id: data.lineId,
+          email: data.email,
+          university: data.university,
+          subtheme: data.subtheme,
+          drive_file_id: data.fileId,
+          drive_file_url: data.fileUrl,
+          created_at: new Date().toISOString(),
+        },
+      ])
+      .select();
+
+    if (error) {
+      throw new Error(`Database error: ${error.message}`);
+    }
+
+    return { success: true, data: submission?.[0] };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return { success: false, error: message };
+  }
+}
+
+/**
  * Insert an event submission into Supabase
  */
 export async function insertEventSubmission(data: {

@@ -97,3 +97,17 @@ export function validateFile(file: any): { valid: boolean; error?: string } {
 
   return { valid: true };
 }
+
+export const iecSubmissionFormSchema = z.object({
+  teamName:     z.string().min(1, 'Team name is required'),
+  fullName:     z.string().min(1, 'Full name is required'),
+  nim:          z.string().min(1, 'NIM/NPM is required'),
+  phoneNumber:  z.string().min(1, 'Phone number is required'),
+  lineId:       z.string().min(1, 'Line ID is required'),
+  email:        z.string().email('Invalid email address'),
+  university:   z.string().min(1, 'University is required'),
+  subtheme:     z.string().min(1, 'Subtheme is required'),
+  essayPdf:     z.any(),
+});
+
+export type IecSubmissionFormInput = z.infer<typeof iecSubmissionFormSchema>;
