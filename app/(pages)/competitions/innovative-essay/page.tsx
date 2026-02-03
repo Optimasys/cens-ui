@@ -27,20 +27,11 @@ const IEC: NextPage = () => {
         
         {/* Background */}
         <Image
-          src="/images/iec-bg.png"
+          src="/images/new-iec-bg.png"
           alt=""
           fill
           priority
           className="object-cover"
-        />
-
-        {/* Gradient Overlay */}
-        <div
-          className="
-            absolute
-            inset-0
-            bg-[linear-gradient(180deg,rgba(230,233,216,0.65)_2%,rgba(33,154,204,0.8)_65%,rgba(3,105,94,0.8)_100%)]
-          "
         />
 
         {/* TITLE */}
@@ -529,19 +520,10 @@ const IEC: NextPage = () => {
         
         {/* Background Image */}
         <Image
-          src="/images/iec4-bg.png"
+          src="/images/new-iec4-bg.png"
           alt=""
           fill
           className="object-cover"
-        />
-
-        {/* Gradient Overlay - Blue and White dominant */}
-        <div
-          className="
-            absolute
-            inset-0
-            bg-[linear-gradient(180deg,rgba(123,197,197,0.7)_0%,rgba(91,168,166,0.5)_150%,rgba(230,233,216,0.75)_150%)]
-          "
         />
 
         {/* Header Section - Title only (no arrow) */}
@@ -784,31 +766,11 @@ const IEC: NextPage = () => {
         
         {/* Background Image */}
         <Image
-          src="/images/iec5-bg.png"
+          src="/images/new-iec5-bg.png"
           alt=""
           fill
           className="object-cover"
         />
-
-        {/* Gradient Overlay */}
-        <div
-          className="
-            absolute
-            inset-0
-            bg-[linear-gradient(180deg,rgba(91,168,166,1)_28%,rgba(110,175,95,0.5)_50%,rgba(110,175,95,1)_100%)]
-          "
-        />
-
-        {/* Decorative Icon - Top Right (Zigzag) */}
-        <div className="absolute top-0 right-0 z-10">
-          <Image
-            src="/images/icon-iec5-1.png"
-            alt=""
-            width={420}
-            height={160}
-            className="w-[280px] sm:w-[360px] lg:w-[420px] h-auto opacity-100"
-          />
-        </div>
 
         {/* Content Container */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1150,31 +1112,6 @@ const IEC: NextPage = () => {
 
         </div>
 
-        {/* Decorative Icon - Bottom (Dots) with Gradient */}
-        <div className="absolute -bottom-10 -right-30 z-10">
-          <div
-            style={{
-              background: 'linear-gradient(90deg, #6EAF5F 0%, #F4E5A2 48%, #63B4CF 100%)',
-              WebkitMaskImage: 'url(/images/vector-iec5.png)',
-              WebkitMaskRepeat: 'no-repeat',
-              WebkitMaskSize: '100%',
-              maskImage: 'url(/images/vector-iec5.png)',
-              maskRepeat: 'no-repeat',
-              maskSize: '100%',
-              opacity: 0.15,
-            }}
-            className="w-[280px] sm:w-[360px] lg:w-[1100px] h-auto"
-          >
-            <Image
-              src="/images/vector-iec5.png"
-              alt=""
-              width={1100}
-              height={900}
-              className="w-[280px] sm:w-[360px] lg:w-[1100px] h-auto invisible"
-            />
-          </div>
-        </div>
-
       </div>
 
       {/* SECTION 6 - Call to Action (Register & Submission) */}
@@ -1182,7 +1119,7 @@ const IEC: NextPage = () => {
         
         {/* Background Image */}
         <Image
-          src="/images/iec6-bg.png"
+          src="/images/new-iec6-bg.png"
           alt=""
           fill
           className="object-cover"
