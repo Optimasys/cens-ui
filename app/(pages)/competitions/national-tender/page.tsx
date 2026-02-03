@@ -1,4 +1,4 @@
-import { CompetitionForm } from '@/components/CompetitionForm';
+import { IECRegisterForm } from '@/components/IECRegisterForm';
 
 export default function NationalTender() {
   return (
@@ -12,7 +12,7 @@ export default function NationalTender() {
         </p>
       </div>
 
-      <CompetitionForm competitionType="national-tender" />
+      <IECRegisterForm competitionType="national-tender" />
     </div>
   );
 }
