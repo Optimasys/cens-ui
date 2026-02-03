@@ -649,7 +649,7 @@ const IEC: NextPage = () => {
       {/* Modal - Question to Consider */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-6xl max-h-[90vh] overflow-hidden bg-gradient-to-br from-[#03695E] to-[#6EAF5F] rounded-[32px] shadow-2xl">
+          <div className="relative w-full max-w-7xl max-h-[90vh] overflow-hidden bg-gradient-to-br from-[#03695E] to-[#6EAF5F] rounded-[32px] shadow-2xl">
             
             {/* Background Image - Different for each theme */}
             <div className="absolute inset-0">
@@ -724,7 +724,7 @@ const IEC: NextPage = () => {
                 </div>
 
                 {/* Questions List */}
-                <ul className="space-y-4 text-white text-[18px] sm:text-[20px] lg:text-[17px] leading-relaxed">
+                <ul className="space-y-4 text-white text-[18px] sm:text-[20px] lg:text-[22px] leading-relaxed">
                   {selectedTheme === 1 ? (
                     <>
                       <li className="flex items-start gap-3">
