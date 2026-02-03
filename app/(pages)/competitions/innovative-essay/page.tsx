@@ -1119,18 +1119,10 @@ const IEC: NextPage = () => {
         
         {/* Background Image */}
         <Image
-          src="/images/new-iec6-bg.png"
+          src="/images/iec6-bg2.png"
           alt=""
           fill
           className="object-cover"
-        />
-
-        {/* Gradient Overlay */}
-        <div
-          className="
-            absolute
-            inset-0
-            bg-[linear-gradient(180deg,rgba(110,175,95,0.94)_0%,rgba(91,168,166,0.85)_50%,rgba(91,168,166,1)_100%)]"
         />
 
         {/* Content Container */}
