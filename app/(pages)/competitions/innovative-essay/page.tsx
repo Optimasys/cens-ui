@@ -711,7 +711,7 @@ const IEC: NextPage = () => {
                   <div
                     className="rounded-full px-6 py-2 text-center"
                     style={{
-                      background: 'linear-gradient(90deg, rgba(3, 105, 94, 0.55) 0%, rgba(110, 175, 95, 0.5) 50%, rgba(255, 225, 129, 0.45) 100%)'
+                      background: 'linear-gradient(90deg, rgba(3, 105, 94, 0.55) 0%, rgba(110, 175, 95, 0.5) 50%, rgba(255, 225, 129, 0.45) 100%)',
                     }}
                   >
                     <p className="text-[#f4e5a2] text-[15px] sm:text-[17px] lg:text-[18px] font-bold font-[var(--font-made-tommy)] text-center">
@@ -724,7 +724,7 @@ const IEC: NextPage = () => {
                 </div>
 
                 {/* Questions List */}
-                <ul className="space-y-4 text-white text-[18px] sm:text-[20px] lg:text-[16px] leading-relaxed">
+                <ul className="space-y-4 text-white text-[18px] sm:text-[20px] lg:text-[22px] leading-relaxed">
                   {selectedTheme === 1 ? (
                     <>
                       <li className="flex items-start gap-3">
@@ -767,7 +767,7 @@ const IEC: NextPage = () => {
                 </ul>
 
                 {/* Footnote */}
-                <p className="mt-6 text-[#fffff] text-[13px] sm:text-[14px] font-[var(--font-made-tommy)] underline underline-offset-[3px]">
+                <p className="mt-6 text-[#f4e5a2] text-[13px] sm:text-[14px] italic font-[var(--font-made-tommy)] underline underline-offset-[3px]">
                   *A more detailed information will be provided in the guidebook
                 </p>
 
@@ -798,6 +798,17 @@ const IEC: NextPage = () => {
             bg-[linear-gradient(180deg,rgba(91,168,166,1)_28%,rgba(110,175,95,0.5)_50%,rgba(110,175,95,1)_100%)]
           "
         />
+
+        {/* Decorative Icon - Top Right (Zigzag) */}
+        <div className="absolute top-0 right-0 z-10">
+          <Image
+            src="/images/icon-iec5-1.png"
+            alt=""
+            width={420}
+            height={160}
+            className="w-[280px] sm:w-[360px] lg:w-[420px] h-auto opacity-100"
+          />
+        </div>
 
         {/* Content Container */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1139,6 +1150,31 @@ const IEC: NextPage = () => {
 
         </div>
 
+        {/* Decorative Icon - Bottom (Dots) with Gradient */}
+        <div className="absolute -bottom-10 -right-30 z-10">
+          <div
+            style={{
+              background: 'linear-gradient(90deg, #6EAF5F 0%, #F4E5A2 48%, #63B4CF 100%)',
+              WebkitMaskImage: 'url(/images/vector-iec5.png)',
+              WebkitMaskRepeat: 'no-repeat',
+              WebkitMaskSize: '100%',
+              maskImage: 'url(/images/vector-iec5.png)',
+              maskRepeat: 'no-repeat',
+              maskSize: '100%',
+              opacity: 0.15,
+            }}
+            className="w-[280px] sm:w-[360px] lg:w-[1100px] h-auto"
+          >
+            <Image
+              src="/images/vector-iec5.png"
+              alt=""
+              width={1100}
+              height={900}
+              className="w-[280px] sm:w-[360px] lg:w-[1100px] h-auto invisible"
+            />
+          </div>
+        </div>
+
       </div>
 
       {/* SECTION 6 - Call to Action (Register & Submission) */}
@@ -1172,7 +1208,6 @@ const IEC: NextPage = () => {
                 font-extrabold
                 leading-tight
                 mb-4
-                tracking-wide
               "
               style={{ textShadow: '0px 4px 8px rgba(0, 0, 0, 0)' }}
             >
