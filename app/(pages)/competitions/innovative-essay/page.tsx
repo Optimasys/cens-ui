@@ -177,7 +177,7 @@ const IEC: NextPage = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="hidden lg:flex justify-center items-center mb-12">
             <Image
-              src="/images/timeline-iec.png"
+              src="/images/timeline-competition-iec.png"
               alt="Competition Timeline"
               width={1500}
               height={500}
@@ -226,7 +226,7 @@ const IEC: NextPage = () => {
               >
                 <div className="text-center">
                   <div className="text-[18px] sm:text-[22px] text-white font-medium mb-2">
-                    13 March 2026
+                    13 April 2026
                   </div>
                   <div 
                     className="text-[24px] sm:text-[32px] text-[#f4e5a2] font-['MADE_TOMMY'] font-medium leading-tight"
@@ -257,7 +257,7 @@ const IEC: NextPage = () => {
                     className="text-[24px] sm:text-[32px] text-[#f4e5a2] font-['MADE_TOMMY'] font-medium"
                     style={{ textShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)' }}
                   >
-                    Cencussion
+                    CENScussion
                   </div>
                 </div>
               </div>
@@ -649,7 +649,7 @@ const IEC: NextPage = () => {
       {/* Modal - Question to Consider */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-5xl max-h-[90vh] overflow-hidden bg-gradient-to-br from-[#03695E] to-[#6EAF5F] rounded-[32px] shadow-2xl">
+          <div className="relative w-full max-w-7xl max-h-[90vh] overflow-hidden bg-gradient-to-br from-[#03695E] to-[#6EAF5F] rounded-[32px] shadow-2xl">
             
             {/* Background Image - Different for each theme */}
             <div className="absolute inset-0">
@@ -680,7 +680,7 @@ const IEC: NextPage = () => {
               <div className="p-8 sm:p-12 lg:p-16 pt-4">
                 
                 {/* Title */}
-                <h2 className="text-[32px] sm:text-[40px] lg:text-[48px] font-[var(--font-gretaros)] font-extrabold text-white mb-8">
+                <h2 className="text-[32px] sm:text-[40px] lg:text-[48px] font-[var(--font-gretaros)] font-extrabold text-white mb-1">
                   QUESTION TO <span className="
                     font-[var(--font-gretaros)]
                     font-extrabold
@@ -692,8 +692,8 @@ const IEC: NextPage = () => {
                 </h2>
 
                 {/* Theme Number and Title */}
-                <div className="mb-8">
-                  <div className="flex items-start gap-4 mb-4">
+                <div className="mb-1">
+                  <div className="flex items-start gap-4 mb-1">
                     <span className="text-[60px] sm:text-[80px] font-[var(--font-gretaros)] font-bold text-[#f4e5a2] leading-none">
                       {selectedTheme === 1 ? "01" : "02"}
                     </span>
@@ -706,44 +706,70 @@ const IEC: NextPage = () => {
                   </div>
                 </div>
 
+                {/* Case Study Box */}
+                <div className="my-4 mx-auto max-w-[90%] sm:max-w-[80%]">
+                  <div
+                    className="rounded-full px-6 py-2 text-center"
+                    style={{
+                      background: 'linear-gradient(90deg, rgba(3, 105, 94, 0.55) 0%, rgba(110, 175, 95, 0.5) 50%, rgba(255, 225, 129, 0.45) 100%)'
+                    }}
+                  >
+                    <p className="text-[#f4e5a2] text-[15px] sm:text-[17px] lg:text-[18px] font-bold font-[var(--font-made-tommy)] text-center">
+                      {selectedTheme === 1
+                        ? "Case Study: Disaster Prevention in Coastal Communities of North Jakarta"
+                        : "Case Study: Reconstruction of Infrastructure in Disaster-Affected Areas of Central Java"
+                      }
+                    </p>
+                  </div>
+                </div>
+
                 {/* Questions List */}
-                <ul className="space-y-4 text-white text-[18px] sm:text-[20px] lg:text-[22px] leading-relaxed">
+                <ul className="space-y-4 text-white text-[18px] sm:text-[20px] lg:text-[16px] leading-relaxed">
                   {selectedTheme === 1 ? (
                     <>
                       <li className="flex items-start gap-3">
                         <span className="text-[#f4e5a2] mt-1 font-[var(--font-made-tommy)]">•</span>
-                        <span>What type of solution in the existing or soon to be built infrastructures is going to be implemented?</span>
+                        <span>What type of solution in the existing or soon to be built infrastructures is going to be implemented to prevent further disasters, primarily flooding? </span>
                       </li>
                       <li className="flex items-start gap-3">
                         <span className="text-[#f4e5a2] mt-1">•</span>
-                        <span>What will be the resilience and sustainability aspect of this solution (e.g., nature integration, less waste, etc.)?</span>
+                        <span>How can we implement the resilience and sustainability aspect in tackling the problems (e.g., nature integration, less waste, etc.)?</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <span className="text-[#f4e5a2] mt-1 font-[var(--font-made-tommy)]">•</span>
-                        <span>How will the community benefit from this solution?</span>
+                        <span>How can we increase community engagement in disaster prevention?</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="text-[#f4e5a2] mt-1 font-[var(--font-made-tommy)]">•</span>
+                        <span>What are the stakeholders involved and how will they coordinate in disaster prevention?</span>
                       </li>
                     </>
                   ) : (
                     <>
                       <li className="flex items-start gap-3">
                         <span className="text-[#f4e5a2] mt-1 font-[var(--font-made-tommy)]">•</span>
-                        <span>What strategy should be implemented to fulfill the needs of disaster affected communities?</span>
+                        <span>Which types of infrastructure should be prioritized to meet the most urgent needs of disaster affected communities?</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <span className="text-[#f4e5a2] mt-1 font-[var(--font-made-tommy)]">•</span>
-                        <span>What approach should be considered in a post-disaster reconstruction attempt?</span>
+                        <span>What reconstruction strategies can effectively involve communities while meeting technical and safety standards?</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <span className="text-[#f4e5a2] mt-1 font-[var(--font-made-tommy)]">•</span>
-                        <span>How can reconstruction be both low-cost and long-lasting?</span>
+                        <span>How can reconstruction be carried out at low cost while ensuring long term resiliency?</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <span className="text-[#f4e5a2] mt-1 font-[var(--font-made-tommy)]">•</span>
-                        <span>How can infrastructures be rebuilt to withstand future disaster?</span>
+                        <span>What design measures can help rebuild infrastructure better withstand future disasters?</span>
                       </li>
                     </>
                   )}
                 </ul>
+
+                {/* Footnote */}
+                <p className="mt-6 text-[#fffff] text-[13px] sm:text-[14px] font-[var(--font-made-tommy)] underline underline-offset-[3px]">
+                  *A more detailed information will be provided in the guidebook
+                </p>
 
               </div>
 
@@ -798,7 +824,7 @@ const IEC: NextPage = () => {
           {/* Guidebook Button */}
           <div className="flex mb-12">
             <a 
-              href="https://drive.google.com/drive/folders/1BdF5RLX2vk7P4bujBfCji1ood-N5wr3I?usp=sharing" // Ganti dengan link guidebook
+              href="https://drive.google.com/drive/folders/1BdF5RLX2vk7P4bujBfCji1ood-N5wr3I?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
               className="
@@ -889,14 +915,14 @@ const IEC: NextPage = () => {
                   </div>
                   <div>
                     <p className="text-white text-[16px] sm:text-[19px] leading-relaxed font-[var(--font-made-tommy)] text-justify mb-4">
-                      Participants must submit their essay and pay the registration fee of <span className="font-bold">IDR 75,000 per team (early bird)</span> or <span className="font-bold">IDR 100,000 per team (normal)</span>, and <span className="font-bold">if the essay passes the Top 20 selection, participants must pay an additional bootcamp registration fee of IDR 100,000 per team</span>, with payments made via E-Wallet (GoPay) or bank transfer to the following account:
+                      Participants must submit their essay and pay the registration fee of <span className="font-bold">IDR 75,000 per team (early bird)</span> or <span className="font-bold">IDR 100,000 per team (Normal Registration)</span>. If the essay passes the Top 10 Selection, participants must pay an <span className="font-bold"> additional CENScussion registration fee of IDR 80,000</span> per team. Payments may be made via E-Wallet (GoPay) or bank transfer to the following account:
                     </p>
                     <div className="flex flex-row gap-12 items-start">
                       {/* E-Wallet */}
                       <div className="flex-1">
                         <h4 className="font-extrabold text-white mb-1 text-[19px] font-[var(--font-made-tommy)]">E-Wallet (GoPay)</h4>
                         <p className="text-white text-[19px] font-[var(--font-made-tommy)]">
-                          Account Name: Siti Hanifah Zadine<br/>
+                          Account Name: <br/>Siti Hanifah Zadine<br/>
                           Phone Number: 087872885464
                         </p>
                       </div>
@@ -905,7 +931,7 @@ const IEC: NextPage = () => {
                       <div className="flex-1">
                         <h4 className="font-extrabold text-white mb-1 text-[19px] font-[var(--font-made-tommy)]">Bank Transfer (BCA)</h4>
                         <p className="text-white text-[19px] font-[var(--font-made-tommy)]">
-                          Account Name: Siti Hanifah Zadine<br/>
+                          Account Name: <br/>Siti Hanifah Zadine<br/>
                           Account Number: 5657031548
                         </p>
                       </div>
@@ -1007,8 +1033,8 @@ const IEC: NextPage = () => {
                 
                   {/* FAQ 1 */}
                   <details className="group">
-                    <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4">
-                      <span className="pr-4">Who is eligible to compete?</span>
+                    <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4 text-justify">
+                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">Who is eligible to compete?</span>
                       <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center border border-white/50 rounded">
                         <svg 
                           className="w-4 h-4 transition-transform duration-300 group-open:rotate-180 text-white" 
@@ -1020,15 +1046,15 @@ const IEC: NextPage = () => {
                         </svg>
                       </div>
                     </summary>
-                    <p className="pb-4 text-white/90 text-[15px] leading-relaxed font-[var(--font-made-tommy)]">
-                      Active undergraduate or Diploma 3/4 (D3/D4) students. Each team must consist of three members, including one team leader, all from the same university.
+                    <p className="pb-4 text-white/90 text-[15px] leading-relaxed font-[var(--font-made-tommy)] text-justify">
+                      Participants can be from any major. However, one of the members must come from civil engineering, environmental engineering, architecture or planology majors. Also, participants must be active undergraduate or diploma (D3/D4) students.
                     </p>
                   </details>
 
                   {/* FAQ 2 */}
                   <details className="group">
-                    <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4 border-t border-white/20">
-                      <span className="pr-4">What should I do when I haven't reached my confirmation email, even though it's been more than 1x24 hours?</span>
+                    <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4 border-t border-white/20 text-justify">
+                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">What should I do when I haven't reached my confirmation email, even though it's been more than 1x24 hours?</span>
                       <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center border border-white/50 rounded">
                         <svg 
                           className="w-4 h-4 transition-transform duration-300 group-open:rotate-180 text-white" 
@@ -1040,15 +1066,15 @@ const IEC: NextPage = () => {
                         </svg>
                       </div>
                     </summary>
-                    <p className="pb-4 text-white/90 text-[15px] leading-relaxed font-[var(--font-made-tommy)]">
-                      Please check your spam/junk folder. If you still haven't received it, contact our committee through the official contact channels provided.
+                    <p className="pb-4 text-white/90 text-[15px] leading-relaxed font-[var(--font-made-tommy)] text-justify">
+                     Participants can inform out contact person, Rian +6281381200497 on WhatsApp.
                     </p>
                   </details>
 
                   {/* FAQ 3 */}
                   <details className="group">
-                    <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4 border-t border-white/20">
-                      <span className="pr-4">What should I do when I have sent the registration form with the wrong data?</span>
+                    <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4 border-t border-white/20 text-justify">
+                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">What should I do when I have sent the registration form with the wrong data?</span>
                       <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center border border-white/50 rounded">
                         <svg 
                           className="w-4 h-4 transition-transform duration-300 group-open:rotate-180 text-white" 
@@ -1060,15 +1086,15 @@ const IEC: NextPage = () => {
                         </svg>
                       </div>
                     </summary>
-                    <p className="pb-4 text-white/90 text-[15px] leading-relaxed font-[var(--font-made-tommy)]">
-                      Please contact our committee immediately with your registration details to make corrections before the deadline.
+                    <p className="pb-4 text-white/90 text-[15px] leading-relaxed font-[var(--font-made-tommy)] text-justify">
+                      Participants can inform our contact person and send the correct data.
                     </p>
                   </details>
 
                   {/* FAQ 4 */}
                   <details className="group">
-                    <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4 border-t border-white/20">
-                      <span className="pr-4">Can we choose a topic outside of the provided subthemes?</span>
+                    <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4 border-t border-white/20 text-justify">
+                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">What is Aanwijzing?</span>
                       <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center border border-white/50 rounded">
                         <svg 
                           className="w-4 h-4 transition-transform duration-300 group-open:rotate-180 text-white" 
@@ -1080,15 +1106,15 @@ const IEC: NextPage = () => {
                         </svg>
                       </div>
                     </summary>
-                    <p className="pb-4 text-white/90 text-[15px] leading-relaxed font-[var(--font-made-tommy)]">
-                      No, all essays must align with one of the two provided subthemes related to resilient infrastructure development.
+                    <p className="pb-4 text-white/90 text-[15px] leading-relaxed font-[var(--font-made-tommy)] text-justify">
+                      Aanwijzing is a process to provide bidders with additional information about the project, clarify any uncertainties, and to ensure that bidders have a clear understanding of the project and the requirements.
                     </p>
                   </details>
 
                   {/* FAQ 5 */}
                   <details className="group">
-                    <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4 border-t border-white/20">
-                      <span className="pr-4">What is the benefit of joining the 23rd CENS UI's Innovative Essay Competition?</span>
+                    <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4 border-t border-white/20 text-justify">
+                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">Where will the final presentation take place?</span>
                       <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center border border-white/50 rounded">
                         <svg 
                           className="w-4 h-4 transition-transform duration-300 group-open:rotate-180 text-white" 
@@ -1100,8 +1126,8 @@ const IEC: NextPage = () => {
                         </svg>
                       </div>
                     </summary>
-                    <p className="pb-4 text-white/90 text-[15px] leading-relaxed font-[var(--font-made-tommy)]">
-                      Participants will gain experience in research, networking opportunities, mentorship from experts, certificates, and prizes for winners including cash rewards up to Rp 5,000,000.
+                    <p className="pb-4 text-white/90 text-[15px] leading-relaxed font-[var(--font-made-tommy)] text-justify">
+                      The final presentation will be held on May 11th, 2026 at the Faculty of Engineering Universitas Indonesia.
                     </p>
                   </details>
 
@@ -1146,6 +1172,7 @@ const IEC: NextPage = () => {
                 font-extrabold
                 leading-tight
                 mb-4
+                tracking-wide
               "
               style={{ textShadow: '0px 4px 8px rgba(0, 0, 0, 0)' }}
             >
@@ -1164,7 +1191,7 @@ const IEC: NextPage = () => {
           {/* Buttons Container */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 lg:gap-12">
             
-            {/* Register Now Button - Updated to use router.push */}
+            {/* Register Now Button */}
             <button
               onClick={() => router.push('/competitions/innovative-essay/register')}
               className="

@@ -11,7 +11,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { fileToBuffer, generateUniqueFileName } from '@/lib/file-utils';
-import { iecSubmissionSchema } from '@/lib/validations';
+import { iecSubmissionFormSchema } from '@/lib/validations';
 import { insertIecSubmission } from '@/lib/supabase';
 import { uploadFileToDrive } from '@/lib/google-drive';
 import { triggerSheetsUpdate, formatDataForSheets } from '@/lib/google-sheets-webhook';
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Validate form data with Zod
-    const validationResult = iecSubmissionSchema.safeParse(data);
+    const validationResult = iecSubmissionFormSchema.safeParse(data);
     if (!validationResult.success) {
       return NextResponse.json(
         {
@@ -61,9 +61,9 @@ export async function POST(request: NextRequest) {
     const validData = validationResult.data;
 
     // Get folder ID from environment
-    const folderId = process.env.GOOGLE_DRIVE_IEC_FOLDER_ID;
+    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
     if (!folderId) {
-      console.error('GOOGLE_DRIVE_IEC_FOLDER_ID environment variable is not set');
+      console.error('GOOGLE_DRIVE_FOLDER_ID environment variable is not set');
       return NextResponse.json(
         {
           success: false,
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
 
     // Trigger Google Sheets webhook (non-blocking - don't fail if it fails)
     let sheetsUpdated = false;
-    const sheetsWebhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
+    const sheetsWebhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL_IEC_SUBMISSIONS;
     if (sheetsWebhookUrl) {
       const sheetsData = formatDataForSheets('iec-submission', {
         teamName: validData.teamName,

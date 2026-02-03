@@ -69,16 +69,16 @@ export async function insertCompetitionSubmission(data: {
           student3: data.student3,
           file_ids: data.fileIds,
           file_urls: data.fileUrls,
-          created_at: new Date().toISOString(),
         },
       ])
-      .select();
+      .select()
+      .single();
 
     if (error) {
       throw new Error(`Database error: ${error.message}`);
     }
 
-    return { success: true, data: submission?.[0] };
+    return { success: true, data: submission };
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     return { success: false, error: message };
@@ -102,7 +102,7 @@ export async function insertIecSubmission(data: {
 }) {
   try {
     const { data: submission, error } = await supabase
-      .from('iec_submissions')
+      .from('iec_submission')
       .insert([
         {
           team_name: data.teamName,
@@ -113,18 +113,18 @@ export async function insertIecSubmission(data: {
           email: data.email,
           university: data.university,
           subtheme: data.subtheme,
-          drive_file_id: data.fileId,
-          drive_file_url: data.fileUrl,
-          created_at: new Date().toISOString(),
+          file_id: data.fileId,
+          file_url: data.fileUrl,
         },
       ])
-      .select();
+      .select()
+      .single();
 
     if (error) {
       throw new Error(`Database error: ${error.message}`);
     }
 
-    return { success: true, data: submission?.[0] };
+    return { success: true, data: submission };
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     return { success: false, error: message };
@@ -157,16 +157,16 @@ export async function insertEventSubmission(data: {
           special_requirements: data.specialRequirements || null,
           drive_file_id: data.driveFileId || null,
           drive_file_url: data.driveFileUrl || null,
-          created_at: new Date().toISOString(),
         },
       ])
-      .select();
+      .select()
+      .single();
 
     if (error) {
       throw new Error(`Database error: ${error.message}`);
     }
 
-    return { success: true, data: submission?.[0] };
+    return { success: true, data: submission };
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     return { success: false, error: message };
