@@ -1,6 +1,5 @@
 "use client";
 
-import EventForm from '@/components/EventForm';
 import Image from 'next/image';
 
 export default function Workshop() {
@@ -132,7 +131,7 @@ export default function Workshop() {
             right-[70px]
             rounded-[44px]
             object-cover
-            shadow-[0_16px_40px_rgba(0,0,0,0.3)]
+            shadow-[0_16px_40px_rgba(0,0,0,0)]
           "
         />
       </div>
@@ -171,7 +170,7 @@ export default function Workshop() {
                 text-[28px] sm:text-[36px] md:text-[42px] lg:text-[48px]
                 font-[var(--font-gretaros)]
                 font-bold
-                bg-[linear-gradient(90deg,#FFF6EE_10%,#F4E5A2_100%)]
+                bg-[linear-gradient(90deg,#FFF6EE_40%,#F4E5A2_100%)]
                 bg-clip-text
                 text-transparent
               "
