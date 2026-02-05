@@ -10,7 +10,7 @@ export default function AboutPage() {
       {/* Background image */}
       <div className="absolute inset-0 -z-10 h-full">
         <Image
-          src="/images/About Us.png"
+          src="/images/About-us.png"
           alt="About CENS UI Background"
           fill
           priority
