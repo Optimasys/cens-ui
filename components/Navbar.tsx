@@ -58,7 +58,7 @@ export function Navbar() {
               activePathPrefix="/events"
             >
               <DropdownLink href="/events/workshop">Workshop</DropdownLink>
-              <DropdownLink href="/events/bootcamp">Bootcamp</DropdownLink>
+              <DropdownLink href="/events/censcussion">CENScussion</DropdownLink>
               <DropdownLink href="/events/national-summit">
                 National Summit
               </DropdownLink>

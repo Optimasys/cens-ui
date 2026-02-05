@@ -325,7 +325,7 @@ export function IECSubmissionForm() {
                       <button
                         type="button"
                         onClick={handlePreviousStep}
-                        className="ml-147 px-8 py-2.5 text-[#0D6B6B] underline hover:text-[#5BA8A6] transition-colors text-[18px]"
+                        className="ml-162 px-8 py-2.5 text-[#0D6B6B] underline hover:text-[#5BA8A6] transition-colors text-[18px] font-bold"
                       >
                         Previous
                       </button>

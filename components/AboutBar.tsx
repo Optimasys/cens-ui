@@ -150,60 +150,105 @@ export function AboutBar() {
         const isOpen = open === item.key;
 
         return (
-          <div key={item.key} className="relative">
-            {/* LEFT VERTICAL BAR */}
-            <div
-              className={`absolute left-0 top-0 w-2 transition-all duration-500 ${
-                isOpen ? "h-full bg-[#03695E]" : "h-[96px] bg-[#03695E]/70"
-              }`}
-            />
+        <div key={item.key} className="relative">
 
-            {/* BAR */}
-            {!isOpen && (
-              <button
-                onClick={() => toggle(item.key)}
-                type="button"
-                className="group relative block w-full text-left transition-all duration-500"
-              >
-                <div className="ml-6 px-10 py-8 rounded-sm text-white text-3xl md:text-4xl font-bold font-[var(--font-made-tommy)] tracking-wide shadow-[4px_4px_6px_rgba(0,0,0,0.25)] backdrop-blur-md bg-[linear-gradient(90deg,#03695E_0%,#92B286_50%,#F4E5A2_100%)] opacity-75 group-hover:opacity-90">
-                  {item.label}
-                </div>
-              </button>
-            )}
+          {/* LEFT VERTICAL BAR */}
+          <div
+            className={`
+              absolute left-0 top-0 transition-all duration-500
+              w-1.5 md:w-2
+              ${isOpen ? "h-full bg-[#03695E]" : "h-[70px] md:h-[96px] bg-[#03695E]/70"}
+            `}
+          />
 
-            {/* DROPDOWN */}
-            <div
-              ref={(el) => {sectionRefs.current[item.key] = el;}}
-              className={`overflow-hidden transition-all duration-500 ${
-                isOpen ? "max-h-[1000px] mt-6" : "max-h-0"
-                }`}
+
+          {/* BAR */}
+          {!isOpen && (
+            <button
+              onClick={() => toggle(item.key)}
+              type="button"
+              className="group relative block w-full text-left transition-all duration-500"
             >
-              <div className="ml-6 pl-6">
-                <h3 className="mb-4 text-3xl md:text-4xl font-bold [font-family:var(--font-gretaros)] tracking-[0.14em] uppercase text-white"
-                    style={{
-                    textShadow: `
-                        0px -0.5px 0px rgba(255,255,255,0.18),
-                        0px 1px 2px rgba(0,0,0,0.18)
-                    `,
-                    }}
-                >
-                  {item.label}
-                </h3>
-
-                {item.key === "testimony" ? (
-                item.content
-                ) : item.key === "track" ? (
-                item.content
-                ) : (
-                <div className="px-10 py-8 rounded-sm text-white backdrop-blur-md shadow-[4px_4px_6px_rgba(0,0,0,0.25)] bg-[linear-gradient(90deg,#03695E_0%,#92B286_50%,#F4E5A2_100%)] opacity-75">
-                    {item.content}
-                </div>
-                )}
-
+              <div
+                className="
+                  ml-3 md:ml-6
+                  px-4 md:px-10
+                  py-4 md:py-8
+                  rounded-sm
+                  text-white
+                  text-lg md:text-3xl
+                  font-bold
+                  font-[var(--font-made-tommy)]
+                  tracking-wide
+                  shadow-[4px_4px_6px_rgba(0,0,0,0.25)]
+                  backdrop-blur-md
+                  bg-[linear-gradient(90deg,#03695E_0%,#92B286_50%,#F4E5A2_100%)]
+                  opacity-75 group-hover:opacity-90
+                "
+              >
+                {item.label}
               </div>
+            </button>
+          )}
+
+
+          {/* DROPDOWN */}
+          <div
+            ref={(el) => { sectionRefs.current[item.key] = el; }}
+            className={`
+              overflow-hidden transition-all duration-500
+              ${isOpen ? "max-h-[1200px] mt-4 md:mt-6" : "max-h-0"}
+            `}
+          >
+            <div className="ml-3 md:ml-6 pl-3 md:pl-6">
+
+              <h3
+                className="
+                  mb-3 md:mb-4
+                  text-xl md:text-4xl
+                  font-bold
+                  [font-family:var(--font-gretaros)]
+                  tracking-[0.14em]
+                  uppercase
+                  text-white
+                "
+                style={{
+                  textShadow: `
+                    0px -0.5px 0px rgba(255,255,255,0.18),
+                    0px 1px 2px rgba(0,0,0,0.18)
+                  `,
+                }}
+              >
+                {item.label}
+              </h3>
+
+
+              {item.key === "testimony" ? (
+                item.content
+              ) : item.key === "track" ? (
+                item.content
+              ) : (
+                <div
+                  className="
+                    px-4 md:px-10
+                    py-4 md:py-8
+                    rounded-sm
+                    text-white
+                    backdrop-blur-md
+                    shadow-[4px_4px_6px_rgba(0,0,0,0.25)]
+                    bg-[linear-gradient(90deg,#03695E_0%,#92B286_50%,#F4E5A2_100%)]
+                    opacity-75
+                    text-sm md:text-lg
+                  "
+                >
+                  {item.content}
+                </div>
+              )}
+
             </div>
           </div>
-        );
+        </div>
+      );
       })}
     </div>
   );
