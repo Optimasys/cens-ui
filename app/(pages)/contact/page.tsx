@@ -75,17 +75,17 @@ export default function ContactPage() {
             className="
               p-[3px] md:p-[4px]
               rounded-[24px] md:rounded-[40px]
-              bg-gradient-to-r
-              from-[#F4E5A2]
-              to-[#6EAF5F]
-              shadow-2xl
+              bg-[#03695E]/30
+              backdrop-blur-[3px]
+              border border-white/10
+              shadow-xl
             "
           >
             {/* GLASS CARD */}
             <div
               className="
                 bg-[#03695E]/20
-                backdrop-blur-2xl
+                backdrop-blur-[3px]
                 border border-white/10
                 rounded-[20px] md:rounded-[36px]
                 p-4 md:p-10
