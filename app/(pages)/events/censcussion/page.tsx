@@ -78,7 +78,7 @@ export default function CenscussionHero() {
 
           {/* IMAGE MOBILE */}
           <div className="mt-10 flex justify-center md:hidden">
-            <div className="overflow-hidden shadow-2xl w-[85%]">
+            <div className="overflow-hidden w-[85%]">
               <Image
                 src="/images/censcussion-1.png"
                 alt="discussion"
@@ -91,7 +91,7 @@ export default function CenscussionHero() {
 
           {/* IMAGE DESKTOP */}
           <div className="hidden md:block absolute right-12 top-1/2 -translate-y-1/2">
-            <div className="overflow-hidden shadow-2xl w-[420px]">
+            <div className="overflow-hidden w-[420px]">
               <Image
                 src="/images/censcussion-1.png"
                 alt="discussion"
@@ -133,14 +133,11 @@ export default function CenscussionHero() {
 
             {/* LEFT CARD */}
             <div className="relative rounded-[20px] p-10 md:p-12 text-white shadow-[0_8px_32px_rgba(0,0,0,0.15)] bg-gradient-to-br from-white/20 via-white/15 to-white/10 overflow-visible backdrop-blur-[1px]">
-              {/* Green gradient overlay from top */}
               <div className="absolute inset-0 bg-gradient-to-b from-[#03695E]/100 via-[#4A9A7E]/30 to-[#6EAF5F]/10 pointer-events-none rounded-[20px]" />
               
               <div className="relative z-10">
-                {/* Box with gradient */}
                 <div className="relative -ml-10 md:-ml-12 w-[85%] md:w-[75%] mb-10 px-6 py-3 shadow-xl bg-gradient-to-r from-[#6EAF5F] via-[#398C5F] to-[#03695E] flex items-center justify-center">
                   <h3 className="font-extrabold text-xl md:text-2xl">Who can participate</h3>
-                  {/* Star */}
                   <Image
                     src="/images/censcussion-star.png"
                     alt="star"
@@ -158,14 +155,11 @@ export default function CenscussionHero() {
 
             {/* RIGHT CARD */}
             <div className="relative rounded-[20px] p-10 md:p-12 text-white shadow-[0_8px_32px_rgba(0,0,0,0.15)] md:mt-16 bg-gradient-to-br from-white/20 via-white/15 to-white/10 overflow-visible backdrop-blur-[1px]">
-              {/* Green gradient overlay from top */}
               <div className="absolute inset-0 bg-gradient-to-b from-[#03695E]/100 via-[#4A9A7E]/30 to-[#6EAF5F]/10 pointer-events-none rounded-[20px]" />
               
               <div className="relative z-10">
-                {/* Box with gradient */}
                 <div className="relative -ml-10 md:-ml-12 w-[85%] md:w-[75%] mb-10 px-6 py-3 shadow-xl bg-gradient-to-r from-[#6EAF5F] via-[#398C5F] to-[#03695E] flex items-center justify-center">
                   <h3 className="font-extrabold text-xl md:text-2xl">Date and Location</h3>
-                  {/* Star */}
                   <Image
                     src="/images/censcussion-star.png"
                     alt="star"
@@ -203,7 +197,6 @@ export default function CenscussionHero() {
           </div>
         </div>
 
-        {/* SMOOTH FADE SECTION */}
         <div className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-b from-transparent to-[#6BB5B5]" />
       </section>
 
@@ -214,7 +207,6 @@ export default function CenscussionHero() {
       {/* ================================================= */}
 
       <section className="relative w-full py-32 overflow-hidden">
-        {/* Background image */}
         <Image
           src="/images/bg-cens3.png"
           alt="background3"
@@ -222,23 +214,17 @@ export default function CenscussionHero() {
           className="object-cover"
         />
 
-        {/* Blend transisi dari section sebelumnya - warna hijau */}
         <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-[#6BB5B5] to-transparent z-[1]" />
 
-        {/* CONTENT */}
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 text-center">
-          
-          {/* CTA TITLE */}
           <h2 className="text-white font-gretaros text-[40px] md:text-[60px] lg:text-[70px] font-extrabold leading-tight mb-6 drop-shadow-xl">
             BE PART OF THE COMPETITION
           </h2>
 
-          {/* HASHTAG */}
           <p className="text-transparent bg-gradient-to-r from-[#FFF6EE] to-[#F4E5A2] bg-clip-text font-tommy text-[32px] md:text-[48px] lg:text-[56px] font-bold mb-20 drop-shadow-lg">
             #YourCENSForward
           </p>
 
-          {/* CONTACT PERSON */}
           <div className="text-white mt-70">
             <h3 className="text-[28px] md:text-[36px] font-bold mb-4 drop-shadow-md">
               Contact Person
@@ -250,10 +236,8 @@ export default function CenscussionHero() {
               081295682771
             </p>
           </div>
-
         </div>
       </section>
-
     </>
   );
 }
