@@ -368,7 +368,7 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                                 Submission Form
                               </Link>
                               . The deadline for essay submission is{' '}
-                              <span className="font-bold">March 1st, 2026</span>.
+                              <span className="font-bold">April 13th, 2026</span>.
                             </span>
                           </li>
                         </ul>
@@ -382,7 +382,7 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                       <button
                         type="button"
                         onClick={handlePreviousStep}
-                        className="ml-147 px-8 py-2.5 text-[#0D6B6B] underline hover:text-[#5BA8A6] transition-colors text-[18px]"
+                        className="ml-147 px-8 py-2.5 text-[#0D6B6B] underline hover:text-[#5BA8A6] transition-colors text-[18px] font-bold"
                       >
                         Previous
                       </button>
