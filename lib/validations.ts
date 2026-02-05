@@ -111,3 +111,17 @@ export const iecSubmissionFormSchema = z.object({
 });
 
 export type IecSubmissionFormInput = z.infer<typeof iecSubmissionFormSchema>;
+
+export const ntcSubmissionFormSchema = z.object({
+  teamName:     z.string().min(1, 'Team name is required'),
+  fullName:     z.string().min(1, 'Full name is required'),
+  nim:          z.string().min(1, 'NIM/NPM is required'),
+  phoneNumber:  z.string().min(1, 'Phone number is required'),
+  lineId:       z.string().min(1, 'Line ID is required'),
+  email:        z.string().email('Invalid email address'),
+  university:   z.string().min(1, 'University is required'),
+  subtheme:     z.string().min(1, 'Subtheme is required'),
+  proposalPdf:     z.any(),
+});
+
+export type NtcSubmissionFormInput = z.infer<typeof ntcSubmissionFormSchema>;

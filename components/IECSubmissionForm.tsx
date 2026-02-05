@@ -288,7 +288,7 @@ export function IECSubmissionForm() {
                       {/* Essay PDF */}
                       <div>
                         <label htmlFor="essayPdf" className="block text-[18px] font-semibold text-[#0D6B6B] mb-1.5">
-                        Compiled Scan of Student’s IDs (PDF)
+                        Final Essay Submission (PDF)
                         </label>
                         <input
                           id="essayPdf"
@@ -303,7 +303,10 @@ export function IECSubmissionForm() {
                           }}
                           className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
                         />
-                        <p className="text-gray-600 text-[14px] mt-1">Format: Team Name_IEC_Title. (max 10MB)</p>
+                        <p className="text-gray-600 text-[14px] mt-1">File name for the essay must be written as:</p>
+                        <p className="text-gray-600 text-[14px] mt-1">IEC(No. Of Sub-Theme)_Team Name_University (max 10MB)</p>
+                        <p className="text-gray-600 text-[14px] mt-1">Example: IEC1_Cens_UI or IEC2_Cens_UI</p>
+
                         {selectedFile && (
                           <p className="text-green-600 text-[14px] mt-1">
                             ✓ Selected: {selectedFile.name}

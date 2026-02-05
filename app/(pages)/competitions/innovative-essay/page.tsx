@@ -1040,7 +1040,7 @@ const IEC: NextPage = () => {
                       </div>
                     </summary>
                     <p className="pb-4 text-white/90 text-[15px] leading-relaxed font-[var(--font-made-tommy)] text-justify">
-                     Participants can inform out contact person, Rian +6281381200497 on WhatsApp.
+                     Participants can inform our contact person, Rian +6281381200497 on WhatsApp.
                     </p>
                   </details>
 

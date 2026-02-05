@@ -270,7 +270,7 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                           }}
                           className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
                         />
-                        <p className="text-gray-600 text-[14px] mt-1">Scan all 3 student IDs into one PDF (max 10MB)</p>
+                        <p className="text-gray-600 text-[14px] mt-1">Format: Team Name_Student ID (Example: Success_Student ID)</p>
                         {selectedFiles.studentIdsScan && (
                           <p className="text-green-600 text-[14px] mt-1">
                             ✓ Selected: {selectedFiles.studentIdsScan.name}
@@ -299,7 +299,7 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                           }}
                           className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
                         />
-                        <p className="text-gray-600 text-[14px] mt-1">Max 10MB</p>
+                        <p className="text-gray-600 text-[14px] mt-1">Format: Team Name_Payment Proof (Example: Success_Payment Proof).</p>
                         {selectedFiles.paymentProof && (
                           <p className="text-green-600 text-[14px] mt-1">
                             ✓ Selected: {selectedFiles.paymentProof.name}
@@ -328,7 +328,7 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                           }}
                           className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
                         />
-                        <p className="text-gray-600 text-[14px] mt-1">Max 10MB</p>
+                        <p className="text-gray-600 text-[14px] mt-1">Format: Team Name_Twibbon Proof (Example: Success_Twibbon Proof).</p>
                         {selectedFiles.twibbonProof && (
                           <p className="text-green-600 text-[14px] mt-1">
                             ✓ Selected: {selectedFiles.twibbonProof.name}
@@ -368,7 +368,7 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                                 Submission Form
                               </Link>
                               . The deadline for essay submission is{' '}
-                              <span className="font-bold">March 1st, 2026</span>.
+                              <span className="font-bold">April 13th, 2026</span>.
                             </span>
                           </li>
                         </ul>

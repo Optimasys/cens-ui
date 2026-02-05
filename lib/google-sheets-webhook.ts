@@ -56,8 +56,44 @@ export type IecSubmissionSheetsPayload = {
   fileUrl: string;
 };
 
+// National Tender Payload
+export type NtcCompetitionSheetsPayload = {
+  submissionType: 'ntc-regis';
+  timestamp: string;
+
+  teamName: string;
+  competitionType: string;
+
+  teamLeader: StudentPayload;
+  student2: StudentPayload;
+  student3: StudentPayload;
+
+  fileUrls: {
+    studentIdsScan: string;
+    paymentProof: string;
+    twibbonProof: string;
+  };
+};
+
+
+export type NtcSubmissionSheetsPayload = {
+  submissionType: 'ntc-submission';
+  timestamp: string;
+
+  teamName: string;
+  fullName: string;
+  nim: string;
+  phoneNumber: string;
+  lineId: string;
+  email: string;
+  university: string;
+  subtheme: string;
+
+  fileUrl: string;
+};
+
 // Future extension: add EventSheetsPayload here
-export type SheetsPayload = CompetitionSheetsPayload | IecSubmissionSheetsPayload;
+export type SheetsPayload = CompetitionSheetsPayload | IecSubmissionSheetsPayload | NtcCompetitionSheetsPayload | NtcSubmissionSheetsPayload;
 
 /* =========================================================
  * Trigger Google Sheets Webhook
@@ -127,10 +163,25 @@ export function formatDataForSheets(
   data: Omit<IecSubmissionSheetsPayload, 'submissionType' | 'timestamp'>
 ): IecSubmissionSheetsPayload;
 export function formatDataForSheets(
-  submissionType: 'iec-regis' | 'iec-submission',
+  submissionType: 'ntc-regis',
+  data: Omit<NtcCompetitionSheetsPayload, 'submissionType' | 'timestamp'>
+): NtcCompetitionSheetsPayload;
+
+export function formatDataForSheets(
+  submissionType: 'ntc-submission',
+  data: Omit<NtcSubmissionSheetsPayload, 'submissionType' | 'timestamp'>
+): NtcSubmissionSheetsPayload;
+export function formatDataForSheets(
+  submissionType:
+    | 'iec-regis'
+    | 'iec-submission'
+    | 'ntc-regis'
+    | 'ntc-submission',
   data:
     | Omit<CompetitionSheetsPayload, 'submissionType' | 'timestamp'>
     | Omit<IecSubmissionSheetsPayload, 'submissionType' | 'timestamp'>
+    | Omit<NtcCompetitionSheetsPayload, 'submissionType' | 'timestamp'>
+    | Omit<NtcSubmissionSheetsPayload, 'submissionType' | 'timestamp'>
 ): SheetsPayload {
   return {
     submissionType,
