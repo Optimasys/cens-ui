@@ -706,7 +706,7 @@ const IEC: NextPage = () => {
                 </div>
 
                 {/* Questions List */}
-                <ul className="space-y-4 text-white text-[18px] sm:text-[20px] lg:text-[22px] leading-relaxed">
+                <ul className="space-y-4 text-white text-[18px] sm:text-[20px] lg:text-[17px] leading-relaxed text-justify">
                   {selectedTheme === 1 ? (
                     <>
                       <li className="flex items-start gap-3">
