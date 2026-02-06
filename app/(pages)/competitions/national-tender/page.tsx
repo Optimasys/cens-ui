@@ -42,70 +42,64 @@ const NTC: NextPage = () => {
   return (
     <>
       {/* SECTION 1 - Introduction */}
-      <div className="relative w-full h-[900px] overflow-hidden text-white font-[var(--font-gretaros)]">
-        
-        {/* Background */}
-        <Image
-          src="/images/ntc-bg1.svg"
-          alt=""
-          fill
-          priority
-          className="object-cover"
-        />
+      <div className="relative max-w-full h-[800px] overflow-hidden text-white font-[var(--font-gretaros)]">
 
-        {/* WRAPPER */}
-        <div
-          className="
-            absolute
-            top-[155px]
-            left-[130px]
-            flex
-            items-start
-            gap-[110px]
-          "
-        >
-          {/* TITLE */}
-          <h1
-            className="
-              text-[85px]
-              leading-[1.05]
-              font-bold
-              tracking-wide
-              bg-[linear-gradient(90deg,#F4E5A2_0%,#FFFFFF_90%)]
-              bg-clip-text
-              text-transparent
-              drop-shadow-[4px_6px_4px_rgba(0,0,0,0.4)]
+  {/* {/ Background /} */}
+  <Image
+    src="/images/ntc-bg1.svg"
+    alt=""
+    fill
+    priority
+    className="object-cover"
+  />
 
-            "
-          >
-            <span className="block">NATIONAL</span>
-            <span className="block">TENDER</span>
-            <span className="block">COMPETITION</span>
-          </h1>
+  {/* {/ WRAPPER /} */}
+  <div className="absolute inset-0 flex items-start justify-start pl-[130px] pr-[100px] pt-[155px]">
+    <div className="flex items-start gap-[90px] max-w-[1600px] w-full">
 
-          {/* DESCRIPTION */}
-          <p
-            className="
-              w-[700px]
-              text-[26px]
-              leading-relaxed
-              font-[var(--font-gretaros)]
-              font-normal
-              text-justify
-              text-white
-              pt-[20px]
-              drop-shadow-[2px_4px_2px_rgba(0,0,0,0.55)]
+      {/* {/ TITLE /} */}
+      <h1
+        className="
+          text-[85px]
+          leading-[1.05]
+          font-bold
+          tracking-wide
+          bg-[linear-gradient(90deg,#F4E5A2_0%,#FFFFFF_90%)]
+          bg-clip-text
+          text-transparent
+          drop-shadow-[4px_6px_4px_rgba(0,0,0,0.4)]
+          flex-shrink-0
+          min-w-[480px]
+        "
+      >
+        <span className="block">NATIONAL</span>
+        <span className="block">TENDER</span>
+        <span className="block">COMPETITION</span>
+      </h1>
 
-            "
-          >
-            A national level tender project competition for D3/D4/S1 students from
-            across Indonesia. This competition is a place to train student’s abilities
-            in estimating building construction projects that also seeks innovation in
-            construction costs and its method from the given study case.
-          </p>
-        </div>
-        
-      </div>
+      {/* {/ DESCRIPTION */}
+      <p
+        className="
+          flex-1
+          max-w-[650px]
+          text-[24px]
+          leading-[1.6]
+          font-normal
+          text-justify
+          text-white
+          pt-[20px]
+          drop-shadow-[2px_4px_2px_rgba(0,0,0,0.55)]
+        "
+      >
+        A national level tender project competition for D3/D4/S1 students from
+        across Indonesia. This competition is a place to train student's abilities
+        in estimating building construction projects that also seeks innovation in
+        construction costs and its method from the given study case.
+      </p>
+    </div>
+  </div>
+
+</div>
 
       {/* SECTION 2 - QUOTE */}
       <div className="relative max-w-full h-[950px] overflow-hidden text-white font-[var(--font-gretaros)]">
