@@ -894,8 +894,8 @@ const IEC: NextPage = () => {
                       {/* E-Wallet */}
                       <div className="flex-1">
                         <h4 className="font-extrabold text-white mb-1 text-[19px] font-[var(--font-made-tommy)]">E-Wallet (GoPay)</h4>
-                        <p className="text-white text-[19px] font-[var(--font-made-tommy)]">
-                          Account Name: <br/>Siti Hanifah Zadine<br/>
+                        <p className="text-white text-[14px] font-[var(--font-made-tommy)]">
+                          Account Name: Siti Hanifah Zadine<br/>
                           Phone Number: 087872885464
                         </p>
                       </div>
@@ -903,8 +903,8 @@ const IEC: NextPage = () => {
                       {/* Bank Transfer */}
                       <div className="flex-1">
                         <h4 className="font-extrabold text-white mb-1 text-[19px] font-[var(--font-made-tommy)]">Bank Transfer (BCA)</h4>
-                        <p className="text-white text-[19px] font-[var(--font-made-tommy)]">
-                          Account Name: <br/>Siti Hanifah Zadine<br/>
+                        <p className="text-white text-[14px] font-[var(--font-made-tommy)]">
+                          Account Name: Siti Hanifah Zadine<br/>
                           Account Number: 5657031548
                         </p>
                       </div>
