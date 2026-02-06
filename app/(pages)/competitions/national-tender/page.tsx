@@ -709,7 +709,7 @@ const NTC: NextPage = () => {
           {/* Guidebook Button */}
           <div className="flex mb-12">
             <a 
-              href="https://drive.google.com/file/d/1l8wG49QX-nQMXFLCXClHvhGg1Olfosel/view"
+              href="https://drive.google.com/drive/folders/1vgwdAZuLgEjE2ejdrrN0oEW-aZXid7Ot?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
               className="

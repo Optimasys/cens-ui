@@ -346,7 +346,7 @@ export function NTCRegisterForm({ competitionType }: CompetitionFormProps) {
                           <li className="flex items-start">
                             <span className="mr-2">•</span>
                             <span>
-                              Each participant must follow the @cens_ui account on Instagram, share an Instagram post using our Twibbon, and post our poster on your Instagram story. The materials can be found at this link:{' '}
+                              Each participant must follow the @cens.ui account on Instagram, share an Instagram post using our Twibbon, and post our poster on your Instagram story. The materials can be found at this link:{' '}
                               <a 
                                 href="https://drive.google.com/drive/folders/1fR7h48vmEUz4ij9lrv5EXOPB1Iik0598" 
                                 target="_blank" 

@@ -153,7 +153,7 @@ function TimelineSection({
 export default function Timeline() {
   const timelineData: TimelineSectionProps[] = [
     {
-      title: "ROADSHOW",
+      title: "Roadshow",
       date: "February – March 2026",
       description: [
         "A series of publication events conducted to promote our Competition.",
@@ -162,7 +162,7 @@ export default function Timeline() {
       imageName: "timeline-roadshow.png",
     },
     {
-      title: "COMPETITION",
+      title: "Competition",
       date: "February – May 2026",
       description:
         "A series of competitions including Innovative Essay Competition and National Tender Competition based on The 23rd CENS UI theme.",
@@ -179,42 +179,42 @@ export default function Timeline() {
       ],
     },
     {
-      title: "WORKSHOP",
+      title: "Workshop",
       date: "March 2026",
       description:
         "A collaborative training experience providing participants with practical skills and knowledge in software operation and is open to the public.",
       imageName: "timeline-workshop.png",
     },
     {
-      title: "BOOTCAMP",
+      title: "CENScussion",
       date: "April 2026",
       description:
-        "A selection process for the Top 20 IEC Finalists to provide insights regarding essay topics through case studies and 1-on-1 mentoring with partners.",
+        "CENScussion is a segment where top 10 delegates from Innovative Essay Competition participate in a discussion to come up with the solutions to the given case study. The five teams with the most outstanding performance will advance to the final presentation.",
       imageName: "timeline-bootcamp.png",
     },
     {
-      title: "WELCOMING NIGHT",
+      title: "Welcoming Night",
       date: "10 May 2026",
       description:
         "A session involves the top 5 finalists from both competition categories as a form of appreciation and welcome reception upon their arrival.",
       imageName: "timeline-welcoming-night.png",
     },
     {
-      title: "FINAL PRESENTATION",
+      title: "Final Presentation",
       date: "11 May 2026",
       description:
         "A designated session where the top 5 finalist teams showcase their projects to the panel of judges.",
       imageName: "timeline-final-presentation.png",
     },
     {
-      title: "COMPANY VISIT",
+      title: "Company Visit",
       date: "12 May 2026",
       description:
         "An interactive experience allowing participants to enhance their knowledge through hands-on company observations.",
       imageName: "timeline-company-visit.png",
     },
     {
-      title: "NATIONAL SUMMIT",
+      title: "National Summit",
       date: "13 May 2026",
       description:
         "The culminating closing event of The 23rd CENS UI, gathering students, stakeholders, professionals, and NGOs within the civil and environmental field to share insights regarding the grand theme.",

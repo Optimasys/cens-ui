@@ -146,9 +146,8 @@ export default function CenscussionHero() {
                     className="absolute -top-2 -right-6 pointer-events-none opacity-90 drop-shadow-lg"
                   />
                 </div>
-
                 <p className="text-xl md:text-2xl leading-relaxed font-normal drop-shadow-md">
-                  The top 20 finalists of Innovative Essay Competition (IEC).
+                  The top 10 finalists of Innovative Essay Competition (IEC).
                 </p>
               </div>
             </div>

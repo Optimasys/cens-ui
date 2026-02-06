@@ -100,7 +100,7 @@ export default function ContactPage() {
                 Media Partner:
               </h3>
               <p className="text-right text-xs md:text-base">
-                Gwenatha Aqilaputri +62 81344001006
+                Falerina Eva +6282176041656
               </p>
               <p className="mb-3 md:mb-6 text-right text-xs md:text-base">
                 ea.23rdcensui@gmail.com
