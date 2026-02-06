@@ -1,173 +1,153 @@
-/**
- * POST /api/submit-iec-submission
- *
- * Handles IEC (Innovative Essay Competition) form submissions:
- * 1. Parse multipart form data (team info + team leader + 1 PDF)
- * 2. Validate form data with Zod
- * 3. Upload PDF to Google Drive
- * 4. Save submission to Supabase
- * 5. Trigger Google Sheets webhook
- */
-
 import { NextRequest, NextResponse } from 'next/server';
-import { fileToBuffer, generateUniqueFileName } from '@/lib/file-utils';
-import { iecSubmissionFormSchema } from '@/lib/validations';
-import { insertIecSubmission } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 import { uploadFileToDrive } from '@/lib/google-drive';
-import { triggerSheetsUpdate, formatDataForSheets } from '@/lib/google-sheets-webhook';
-import { getErrorMessage, getErrorStatusCode } from '@/lib/errors';
+import {
+  formatDataForSheets,
+  triggerSheetsUpdate,
+} from '@/lib/google-sheets-webhook';
 
+/**
+ * GET /api/submit-iecsubmission
+ */
+export async function GET() {
+  return NextResponse.json({
+    success: true,
+    message: 'IEC Submission API is running',
+  });
+}
+
+/**
+ * POST /api/submit-iecsubmission
+ */
 export async function POST(request: NextRequest) {
   try {
-    // Parse multipart form data
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+
     const formData = await request.formData();
 
-    // Extract file
-    const essayFile = formData.get('essayPdf') as File | null;
+    // ===== Extract fields (NULL SAFE) =====
+    const teamName = String(formData.get('teamName') || '');
+    const fullName = String(formData.get('fullName') || '');
+    const nim = String(formData.get('nim') || '');
+    const phoneNumber = String(formData.get('phoneNumber') || '');
+    const lineId = String(formData.get('lineId') || '');
+    const email = String(formData.get('email') || '');
+    const university = String(formData.get('university') || '');
+    const subtheme = String(formData.get('subtheme') || '');
+    const essayPDF = formData.get('essayPDF');
 
-    if (!essayFile) {
+    // ===== Validation =====
+    const missing: string[] = [];
+
+    if (!teamName) missing.push('teamName');
+    if (!fullName) missing.push('fullName');
+    if (!nim) missing.push('nim');
+    if (!phoneNumber) missing.push('phoneNumber');
+    if (!lineId) missing.push('lineId');
+    if (!email) missing.push('email');
+    if (!university) missing.push('university');
+    if (!subtheme) missing.push('subtheme');
+
+    if (missing.length) {
       return NextResponse.json(
-        { success: false, message: 'Essay PDF file is required' },
+        { success: false, message: `Missing: ${missing.join(', ')}` },
         { status: 400 }
       );
     }
 
-    // Extract form fields
-    const data = {
-      teamName: formData.get('teamName') as string,
-      fullName: formData.get('fullName') as string,
-      nim: formData.get('nim') as string,
-      phoneNumber: formData.get('phoneNumber') as string,
-      lineId: formData.get('lineId') as string,
-      email: formData.get('email') as string,
-      university: formData.get('university') as string,
-      subtheme: formData.get('subtheme') as string,
-      essayPdf: essayFile,
-    };
-
-    // Validate form data with Zod
-    const validationResult = iecSubmissionFormSchema.safeParse(data);
-    if (!validationResult.success) {
+    if (!essayPDF || !(essayPDF instanceof File)) {
       return NextResponse.json(
-        {
-          success: false,
-          message: 'Validation failed',
-          errors: validationResult.error.flatten(),
-        },
+        { success: false, message: 'Essay PDF required' },
         { status: 400 }
       );
     }
 
-    const validData = validationResult.data;
-
-    // Get folder ID from environment
-    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
-    if (!folderId) {
-      console.error('GOOGLE_DRIVE_FOLDER_ID environment variable is not set');
+    if (essayPDF.type !== 'application/pdf') {
       return NextResponse.json(
-        {
-          success: false,
-          message: 'Server configuration error: Google Drive folder not configured',
-        },
-        { status: 500 }
+        { success: false, message: 'File must be PDF' },
+        { status: 400 }
       );
     }
 
-    // Upload essay PDF to Google Drive
-    let driveResponse;
-    try {
-      driveResponse = await uploadFileToDrive(
-        await fileToBuffer(validData.essayPdf),
-        generateUniqueFileName(validData.essayPdf.name, `iec-essay-${validData.teamName}`),
-        validData.essayPdf.type,
-        folderId
-      );
-    } catch (error) {
-      console.error('Google Drive upload error:', error);
+    if (essayPDF.size > 10 * 1024 * 1024) {
       return NextResponse.json(
-        {
-          success: false,
-          message: 'Failed to upload essay PDF to Google Drive',
-        },
-        { status: 500 }
+        { success: false, message: 'Max file size 10MB' },
+        { status: 400 }
       );
     }
 
-    // Save submission to Supabase
-    const supabaseResult = await insertIecSubmission({
-      teamName: validData.teamName,
-      fullName: validData.fullName,
-      nim: validData.nim,
-      phoneNumber: validData.phoneNumber,
-      lineId: validData.lineId,
-      email: validData.email,
-      university: validData.university,
-      subtheme: validData.subtheme,
-      fileId: driveResponse.id,
-      fileUrl: driveResponse.webViewLink,
-    });
+    // ===== Upload to Drive =====
+    const buffer = Buffer.from(await essayPDF.arrayBuffer());
 
-    if (!supabaseResult.success) {
-      console.error('Supabase error:', supabaseResult.error);
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Failed to save submission to database',
-        },
-        { status: 500 }
-      );
-    }
+    const driveResponse = await uploadFileToDrive(
+      buffer,
+      `iec-${teamName}-${Date.now()}.pdf`,
+      'application/pdf',
+      process.env.GOOGLE_DRIVE_FOLDER_ID!
+    );
 
-    // Trigger Google Sheets webhook (non-blocking - don't fail if it fails)
-    let sheetsUpdated = false;
-    const sheetsWebhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL_IEC_SUBMISSIONS;
-    if (sheetsWebhookUrl) {
-      const sheetsData = formatDataForSheets('iec-submission', {
-        teamName: validData.teamName,
-        fullName: validData.fullName,
-        nim: validData.nim,
-        phoneNumber: validData.phoneNumber,
-        lineId: validData.lineId,
-        email: validData.email,
-        university: validData.university,
-        subtheme: validData.subtheme,
+    // ===== Save to Supabase =====
+    const { data, error } = await supabase
+      .from('iec_submission')
+      .insert({
+        team_name: teamName,
+        full_name: fullName,
+        nim,
+        phone_number: phoneNumber,
+        line_id: lineId,
+        email,
+        university,
+        subtheme,
+        file_id: driveResponse.id,
+        file_url: driveResponse.webViewLink,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    // ===== Google Sheets =====
+    if (process.env.GOOGLE_SHEETS_WEBHOOK_URL_IEC_SUBMISSIONS) {
+      const payload = formatDataForSheets('iec-submission', {
+        teamName,
+        fullName,
+        nim,
+        phoneNumber,
+        lineId,
+        email,
+        university,
+        subtheme,
         fileUrl: driveResponse.webViewLink,
       });
 
-      const sheetsResult = await triggerSheetsUpdate(sheetsWebhookUrl, sheetsData);
-      sheetsUpdated = sheetsResult.success;
-
-      if (!sheetsUpdated) {
-        console.warn('Sheets webhook warning:', sheetsResult.message);
-      }
+      await triggerSheetsUpdate(
+        process.env.GOOGLE_SHEETS_WEBHOOK_URL_IEC_SUBMISSIONS,
+        payload
+      );
     }
 
-    return NextResponse.json(
-      {
-        success: true,
-        message: 'IEC submission received successfully',
-        data: {
-          submissionId: supabaseResult.data?.id,
-          fileId: driveResponse.id,
-          fileUrl: driveResponse.webViewLink,
-          sheetsUpdated,
-        },
+    return NextResponse.json({
+      success: true,
+      message: 'IEC submission successful',
+      data: {
+        id: data.id,
+        submittedAt: data.created_at,
       },
-      { status: 200 }
-    );
-  } catch (error) {
-    const message = getErrorMessage(error);
-    const statusCode = getErrorStatusCode(error);
+    });
 
-    console.error('Submit IEC submission error:', message);
+  } catch (error) {
+    console.error(error);
 
     return NextResponse.json(
       {
         success: false,
-        message: 'An error occurred while processing your IEC submission',
-        error: message,
+        message: 'Submission failed',
+        error: error instanceof Error ? error.message : 'Unknown',
       },
-      { status: statusCode }
+      { status: 500 }
     );
   }
 }

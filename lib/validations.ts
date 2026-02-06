@@ -99,29 +99,67 @@ export function validateFile(file: any): { valid: boolean; error?: string } {
 }
 
 export const iecSubmissionFormSchema = z.object({
-  teamName:     z.string().min(1, 'Team name is required'),
-  fullName:     z.string().min(1, 'Full name is required'),
-  nim:          z.string().min(1, 'NIM/NPM is required'),
-  phoneNumber:  z.string().min(1, 'Phone number is required'),
-  lineId:       z.string().min(1, 'Line ID is required'),
-  email:        z.string().email('Invalid email address'),
-  university:   z.string().min(1, 'University is required'),
-  subtheme:     z.string().min(1, 'Subtheme is required'),
-  essayPdf:     z.any(),
+  teamName: z.string().min(1, 'Team name is required').max(255),
+
+  fullName: z.string().min(1, 'Full name is required').max(255),
+
+  nim: z
+    .string()
+    .regex(/^\d+$/, 'NIM/NPM must contain digits only')
+    .min(10, 'NIM/NPM must be at least 10 digits')
+    .max(50),
+
+  phoneNumber: z
+    .string()
+    .regex(/^\d+$/, 'Phone number must contain digits only')
+    .min(12, 'Phone number must be at least 12 digits')
+    .max(20),
+
+  lineId: z.string().min(1, 'LINE ID is required').max(100),
+
+  email: z.string().email('Invalid email address').max(255),
+
+  university: z.string().min(1, 'University is required').max(255),
+
+  subtheme: z.string().min(1, 'Subtheme is required').max(255),
+
+  essayPdf: z.instanceof(File).refine(
+    (file) => file.type === 'application/pdf',
+    'Essay PDF must be a PDF file'
+  ),
 });
+
 
 export type IecSubmissionFormInput = z.infer<typeof iecSubmissionFormSchema>;
 
 export const ntcSubmissionFormSchema = z.object({
-  teamName:     z.string().min(1, 'Team name is required'),
-  fullName:     z.string().min(1, 'Full name is required'),
-  nim:          z.string().min(1, 'NIM/NPM is required'),
-  phoneNumber:  z.string().min(1, 'Phone number is required'),
-  lineId:       z.string().min(1, 'Line ID is required'),
-  email:        z.string().email('Invalid email address'),
-  university:   z.string().min(1, 'University is required'),
-  subtheme:     z.string().min(1, 'Subtheme is required'),
-  proposalPdf:     z.any(),
+  teamName: z.string().min(1, 'Team name is required').max(255),
+
+  fullName: z.string().min(1, 'Full name is required').max(255),
+
+  nim: z
+    .string()
+    .regex(/^\d+$/, 'NIM/NPM must contain digits only')
+    .min(10, 'NIM/NPM must be at least 10 digits')
+    .max(50),
+
+  phoneNumber: z
+    .string()
+    .regex(/^\d+$/, 'Phone number must contain digits only')
+    .min(12, 'Phone number must be at least 12 digits')
+    .max(20),
+
+  lineId: z.string().min(1, 'LINE ID is required').max(100),
+
+  email: z.string().email('Invalid email address').max(255),
+
+  university: z.string().min(1, 'University is required').max(255),
+
+  proposalPdf: z.instanceof(File).refine(
+    (file) => file.type === 'application/pdf',
+    'Proposal document must be a PDF file'
+  ),
 });
+
 
 export type NtcSubmissionFormInput = z.infer<typeof ntcSubmissionFormSchema>;

@@ -31,68 +31,89 @@ export function NTCSubmissionForm() {
     mode: 'onChange',
   });
 
-  const onSubmit = async (data: NtcSubmissionFormInput) => {
-    setIsLoading(true);
-    setSubmitStatus(null);
+const onSubmit = async (data: NtcSubmissionFormInput) => {
+  setIsLoading(true);
+  setSubmitStatus(null);
 
-    try {
-      // Manual file validation
-      if (!data.proposalPdf) {
-        throw new Error('Proposal Document PDF is required');
-      }
-      if (!(data.proposalPdf instanceof File)) {
-        throw new Error('Proposal Document PDF is not a valid file');
-      }
-      if (data.proposalPdf.size > 10 * 1024 * 1024) {
-        throw new Error('Proposal Document PDF size must be less than 10MB');
-      }
-      if (data.proposalPdf.type !== 'application/pdf') {
-        throw new Error('Proposal Document must be a PDF file');
-      }
-
-      const formData = new FormData();
-
-      // Add fields
-      formData.append('teamName', data.teamName);
-      formData.append('fullName', data.fullName);
-      formData.append('nim', data.nim);
-      formData.append('phoneNumber', data.phoneNumber);
-      formData.append('lineId', data.lineId);
-      formData.append('email', data.email);
-      formData.append('university', data.university);
-      formData.append('subtheme', data.subtheme);
-
-      // Add file
-      formData.append('proposalPdf', data.proposalPdf);
-
-      const response = await fetch('/api/submit-ntcsubmission', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Failed to submit form');
-      }
-
-      // Reset form
-      reset();
-      setSelectedFile(null);
-
-      // Redirect to success page
-      router.push('/submission-ntc-success');
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'An error occurred';
-      console.error('Submit error:', message);
-      setSubmitStatus({
-        type: 'error',
-        message,
-      });
-    } finally {
-      setIsLoading(false);
+  try {
+    // Manual file validation
+    if (!data.proposalPdf) {
+      throw new Error('Proposal Document PDF is required');
     }
-  };
+    if (!(data.proposalPdf instanceof File)) {
+      throw new Error('Proposal Document PDF is not a valid file');
+    }
+    if (data.proposalPdf.size > 10 * 1024 * 1024) {
+      throw new Error('Proposal Document PDF size must be less than 10MB');
+    }
+    if (data.proposalPdf.type !== 'application/pdf') {
+      throw new Error('Proposal Document must be a PDF file');
+    }
+
+    const formData = new FormData();
+
+    // Add fields
+    formData.append('teamName', data.teamName);
+    formData.append('fullName', data.fullName);
+    formData.append('nim', data.nim);
+    formData.append('phoneNumber', data.phoneNumber);
+    formData.append('lineId', data.lineId);
+    formData.append('email', data.email);
+    formData.append('university', data.university);
+
+    // Add file
+    formData.append('proposalPdf', data.proposalPdf);
+
+    console.log('Submitting to:', '/api/submit-ntcsubmission');
+    
+    const response = await fetch('/api/submit-ntcsubmission', {
+      method: 'POST',
+      body: formData,
+    });
+
+    console.log('Response status:', response.status);
+    console.log('Response content-type:', response.headers.get('content-type'));
+
+    // ✅ Clone response sebelum consume, untuk bisa baca text dan json
+    const contentType = response.headers.get('content-type');
+    
+    if (!contentType || !contentType.includes('application/json')) {
+      // Get text from response
+      const text = await response.text();
+      console.error('Non-JSON response (status ' + response.status + '):', text.substring(0, 500));
+      
+      if (response.status === 404) {
+        throw new Error('API endpoint not found. Please restart the development server.');
+      }
+      
+      throw new Error(`Server error (${response.status}): Invalid response format.`);
+    }
+
+    // Now parse JSON
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to submit form');
+    }
+
+    // Reset form
+    reset();
+    setSelectedFile(null);
+
+    // Redirect to success page
+    router.push('/submission-ntc-success');
+    
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'An error occurred';
+    console.error('Submit error:', message);
+    setSubmitStatus({
+      type: 'error',
+      message,
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handlePreviousStep = () => {
     if (currentStep > 1) {
@@ -263,20 +284,6 @@ export function NTCSubmissionForm() {
                             )}
                           </div>
 
-                          {/* Subtheme */}
-                          <div>
-                            <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
-                              Subtheme<span className="text-red-500">*</span>
-                            </label>
-                            <input
-                              type="text"
-                              {...register('subtheme')}
-                              className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[14px]"
-                            />
-                            {errors.subtheme && (
-                              <p className="text-red-500 text-xs mt-1">{errors.subtheme.message}</p>
-                            )}
-                          </div>
                         </div>
                       </div>
                     </div>
