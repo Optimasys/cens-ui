@@ -73,11 +73,10 @@ export default function ContactPage() {
         <div className="w-[58%] md:w-[600px] z-0">
           <div
             className="
-              p-[3px] md:p-[4px]
               rounded-[24px] md:rounded-[40px]
               bg-[#03695E]/30
               backdrop-blur-[3px]
-              border border-white/10
+              border-[5px] border-[#F4E5A2]
               shadow-xl
             "
           >
@@ -86,7 +85,6 @@ export default function ContactPage() {
               className="
                 bg-[#03695E]/20
                 backdrop-blur-[3px]
-                border border-white/10
                 rounded-[20px] md:rounded-[36px]
                 p-4 md:p-10
               "
