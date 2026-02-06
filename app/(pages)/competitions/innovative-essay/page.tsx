@@ -27,7 +27,7 @@ const IEC: NextPage = () => {
         
         {/* Background */}
         <Image
-          src="/images/new-iec-bg.png"
+          src="/images/iec1-bg.png"
           alt=""
           fill
           priority
@@ -1067,7 +1067,7 @@ const IEC: NextPage = () => {
                   {/* FAQ 4 */}
                   <details className="group">
                     <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4 border-t border-white/20 text-justify">
-                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">What is Aanwijzing?</span>
+                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">Can we choose a topic outside of the provided subthemes?</span>
                       <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center border border-white/50 rounded">
                         <svg 
                           className="w-4 h-4 transition-transform duration-300 group-open:rotate-180 text-white" 
@@ -1080,14 +1080,14 @@ const IEC: NextPage = () => {
                       </div>
                     </summary>
                     <p className="pb-4 text-white/90 text-[15px] leading-relaxed font-[var(--font-made-tommy)] text-justify">
-                      Aanwijzing is a process to provide bidders with additional information about the project, clarify any uncertainties, and to ensure that bidders have a clear understanding of the project and the requirements.
+                      The topic chosen must use the subtheme provided because in the assessment component there is an assessment based on relevancy to the subtheme.
                     </p>
                   </details>
 
                   {/* FAQ 5 */}
                   <details className="group">
                     <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4 border-t border-white/20 text-justify">
-                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">Where will the final presentation take place?</span>
+                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">What is the benefit of joining the 23rd CENS UI's Innovative Essay Competition?</span>
                       <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center border border-white/50 rounded">
                         <svg 
                           className="w-4 h-4 transition-transform duration-300 group-open:rotate-180 text-white" 
@@ -1100,7 +1100,7 @@ const IEC: NextPage = () => {
                       </div>
                     </summary>
                     <p className="pb-4 text-white/90 text-[15px] leading-relaxed font-[var(--font-made-tommy)] text-justify">
-                      The final presentation will be held on May 11th, 2026 at the Faculty of Engineering Universitas Indonesia.
+                      The benefits of joining The 23rd CENS UI'S Innovation Essay Competition are enhancing writing skills, developing critical thinking, expanding knowledge about civil engineering issues relevant to the theme, chance to get recognition and awards.
                     </p>
                   </details>
 
