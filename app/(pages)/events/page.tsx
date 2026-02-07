@@ -25,7 +25,7 @@ export default function Events() {
 
         {/* Student's Discussion Forum */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-bold mb-4">Student's Discussion Forum</h2>
+          <h2 className="text-2xl font-bold mb-4">Student&apos;s Discussion Forum</h2>
           <p className="text-gray-600 mb-6">
             Event details coming soon...
           </p>
