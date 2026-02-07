@@ -140,3 +140,75 @@ export const checkDuplicateNIM = async (
   if (error) throw error;
   return !!data;
 };
+
+/**
+ * Insert a competition submission into Supabase
+ */
+export async function insertCompetitionSubmission(data: {
+  teamName: string;
+  competitionType: string;
+  teamLeader: {
+    fullName: string;
+    nim: string;
+    phoneNumber: string;
+    lineId: string;
+    email: string;
+    university: string;
+    major: string;
+  };
+  student2: {
+    fullName: string;
+    nim: string;
+    phoneNumber: string;
+    lineId: string;
+    email: string;
+    university: string;
+    major: string;
+  };
+  student3: {
+    fullName: string;
+    nim: string;
+    phoneNumber: string;
+    lineId: string;
+    email: string;
+    university: string;
+    major: string;
+  };
+  fileIds: {
+    studentIdsScan: string;
+    paymentProof: string;
+    twibbonProof: string;
+  };
+  fileUrls: {
+    studentIdsScan: string;
+    paymentProof: string;
+    twibbonProof: string;
+  };
+}) {
+  try {
+    const { data: submission, error } = await supabase
+      .from('competition_submissions')
+      .insert([
+        {
+          team_name: data.teamName,
+          competition_type: data.competitionType,
+          team_leader: data.teamLeader,
+          student2: data.student2,
+          student3: data.student3,
+          file_ids: data.fileIds,
+          file_urls: data.fileUrls,
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Database error: ${error.message}`);
+    }
+
+    return { success: true, data: submission };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return { success: false, error: message };
+  }
+}
