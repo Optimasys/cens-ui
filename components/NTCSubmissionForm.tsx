@@ -120,7 +120,7 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
 
   return (
     <div
-      className="min-h-screen py-8 px-4 bg-cover bg-center bg-no-repeat relative"
+      className="min-h-screen py-4 sm:py-8 px-3 sm:px-4 bg-cover bg-center bg-no-repeat relative"
       style={{
         backgroundImage: 'url(/images/bg-register.png)',
       }}
@@ -131,24 +131,24 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
       <div className="relative z-10 max-w-5xl mx-auto">
         <div className="relative">
           {/* Main Form Container */}
-          <div className="bg-[#E6E9D8] rounded-3xl shadow-2xl overflow-hidden">
+          <div className="bg-[#E6E9D8] rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden">
             <div className="flex">
               {/* Form Content */}
-              <div className="flex-1 p-8 lg:p-12">
+              <div className="flex-1 p-4 sm:p-6 lg:p-12">
 
                 {/* Header */}
-                <div className="mb-8">
-                  <h2 className="text-[28px] lg:text-[32px] font-bold text-[#0D6B6B] mb-1 font-[var(--font-gretaros)]">
+                <div className="mb-6 sm:mb-8">
+                  <h2 className="text-[22px] sm:text-[28px] lg:text-[32px] font-bold text-[#0D6B6B] mb-1 font-[var(--font-gretaros)]">
                     Submission Form
                   </h2>
-                  <p className="text-[16px] lg:text-[18px] text-[#0D6B6B] font-[var(--font-gretaros)]">
+                  <p className="text-[14px] sm:text-[16px] lg:text-[18px] text-[#0D6B6B] font-[var(--font-gretaros)]">
                     National Tender Competition (NTC)
                   </p>
                 </div>
 
                 {submitStatus && (
                   <div
-                    className={`mb-6 p-4 rounded-xl ${
+                    className={`mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg sm:rounded-xl text-sm sm:text-base ${
                       submitStatus.type === 'success'
                         ? 'bg-green-50 text-green-800 border-2 border-green-200'
                         : 'bg-red-50 text-red-800 border-2 border-red-200'
@@ -161,17 +161,17 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                   {/* STEP 1: Team Name + Team Leader Info */}
                   {currentStep === 1 && (
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       {/* Team Name */}
                       <div>
-                        <label htmlFor="teamName" className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
+                        <label htmlFor="teamName" className="block text-[13px] sm:text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
                           Team Name<span className="text-red-500">*</span>
                         </label>
                         <input
                           id="teamName"
                           type="text"
                           {...register('teamName')}
-                          className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[14px]"
+                          className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[13px] sm:text-[14px]"
                         />
                         {errors.teamName && (
                           <p className="text-red-500 text-xs mt-1">{errors.teamName.message}</p>
@@ -179,21 +179,21 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                       </div>
 
                       {/* Team Leader section header */}
-                      <div className="pt-3">
-                        <h4 className="text-[16px] font-bold text-[#0D6B6B] mb-4 font-[var(--font-gretaros)]">
+                      <div className="pt-2 sm:pt-3">
+                        <h4 className="text-[15px] sm:text-[16px] font-bold text-[#0D6B6B] mb-3 sm:mb-4 font-[var(--font-gretaros)]">
                           Team Leader
                         </h4>
 
                         {/* Full Name */}
-                        <div className="space-y-4">
+                        <div className="space-y-3 sm:space-y-4">
                           <div>
-                            <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
+                            <label className="block text-[13px] sm:text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
                               Full Name<span className="text-red-500">*</span>
                             </label>
                             <input
                               type="text"
                               {...register('fullName')}
-                              className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[14px]"
+                              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[13px] sm:text-[14px]"
                             />
                             {errors.fullName && (
                               <p className="text-red-500 text-xs mt-1">{errors.fullName.message}</p>
@@ -202,13 +202,13 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
 
                           {/* NIM/NPM */}
                           <div>
-                            <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
+                            <label className="block text-[13px] sm:text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
                               Students&apos; Number (NIM/NPM)<span className="text-red-500">*</span>
                             </label>
                             <input
                               type="text"
                               {...register('nim')}
-                              className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[14px]"
+                              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[13px] sm:text-[14px]"
                             />
                             {errors.nim && (
                               <p className="text-red-500 text-xs mt-1">{errors.nim.message}</p>
@@ -217,13 +217,13 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
 
                           {/* Phone Number */}
                           <div>
-                            <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
+                            <label className="block text-[13px] sm:text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
                               Phone Number (Whatsapp)<span className="text-red-500">*</span>
                             </label>
                             <input
                               type="tel"
                               {...register('phoneNumber')}
-                              className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[14px]"
+                              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[13px] sm:text-[14px]"
                             />
                             {errors.phoneNumber && (
                               <p className="text-red-500 text-xs mt-1">{errors.phoneNumber.message}</p>
@@ -232,13 +232,13 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
 
                           {/* Line ID */}
                           <div>
-                            <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
+                            <label className="block text-[13px] sm:text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
                               Line ID<span className="text-red-500">*</span>
                             </label>
                             <input
                               type="text"
                               {...register('lineId')}
-                              className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[14px]"
+                              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[13px] sm:text-[14px]"
                             />
                             {errors.lineId && (
                               <p className="text-red-500 text-xs mt-1">{errors.lineId.message}</p>
@@ -247,13 +247,13 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
 
                           {/* Email */}
                           <div>
-                            <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
+                            <label className="block text-[13px] sm:text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
                               Email<span className="text-red-500">*</span>
                             </label>
                             <input
                               type="email"
                               {...register('email')}
-                              className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[14px]"
+                              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[13px] sm:text-[14px]"
                             />
                             {errors.email && (
                               <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
@@ -262,13 +262,13 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
 
                           {/* University */}
                           <div>
-                            <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
+                            <label className="block text-[13px] sm:text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
                               University<span className="text-red-500">*</span>
                             </label>
                             <input
                               type="text"
                               {...register('university')}
-                              className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[14px]"
+                              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[13px] sm:text-[14px]"
                             />
                             {errors.university && (
                               <p className="text-red-500 text-xs mt-1">{errors.university.message}</p>
@@ -282,10 +282,10 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
 
                   {/* STEP 2: Proposal Document Upload - PDF and BOQ Excel */}
                   {currentStep === 2 && (
-                    <div className="space-y-6">
+                    <div className="space-y-4 sm:space-y-6">
                       {/* Proposal Document PDF */}
                       <div>
-                        <label htmlFor="proposalPdf" className="block text-[18px] font-semibold text-[#0D6B6B] mb-1.5">
+                        <label htmlFor="proposalPdf" className="block text-[15px] sm:text-[18px] font-semibold text-[#0D6B6B] mb-1.5">
                           Proposal Document (PDF)<span className="text-red-500">*</span>
                         </label>
                         <input
@@ -299,22 +299,22 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                               setSelectedPdfFile(file);
                             }
                           }}
-                          className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
+                          className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[12px] sm:text-[14px] file:mr-2 sm:file:mr-3 file:py-1 sm:file:py-1.5 file:px-2 sm:file:px-4 file:rounded-md file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
                         />
-                        <p className="text-gray-600 text-[14px] mt-1">Format: Team Name_NTC_Title.pdf (max 10MB)</p>
+                        <p className="text-gray-600 text-[12px] sm:text-[14px] mt-1">Format: Team Name_NTC_Title.pdf (max 10MB)</p>
                         {selectedPdfFile && (
-                          <p className="text-green-600 text-[14px] mt-1">
+                          <p className="text-green-600 text-[12px] sm:text-[14px] mt-1 break-all">
                             ✓ Selected: {selectedPdfFile.name}
                           </p>
                         )}
                         {errors.proposalPdf && (
-                          <p className="text-red-500 text-[14px] mt-1">{String(errors.proposalPdf.message)}</p>
+                          <p className="text-red-500 text-[12px] sm:text-[14px] mt-1">{String(errors.proposalPdf.message)}</p>
                         )}
                       </div>
 
                       {/* BOQ Excel File */}
                       <div>
-                        <label htmlFor="boqFile" className="block text-[18px] font-semibold text-[#0D6B6B] mb-1.5">
+                        <label htmlFor="boqFile" className="block text-[15px] sm:text-[18px] font-semibold text-[#0D6B6B] mb-1.5">
                           Bill of Quantity (BOQ) - Excel<span className="text-red-500">*</span>
                         </label>
                         <input
@@ -328,28 +328,32 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                               setSelectedBoqFile(file);
                             }
                           }}
-                          className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
+                          className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[12px] sm:text-[14px] file:mr-2 sm:file:mr-3 file:py-1 sm:file:py-1.5 file:px-2 sm:file:px-4 file:rounded-md file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
                         />
-                        <p className="text-gray-600 text-[14px] mt-1 text-justify">format penamaan : BoQ_Nama Tim_Universitas <br/>(Contoh : BoQ_CENS_Univeristas Indonesia). <br/> Max 10MB </p>
+                        <p className="text-gray-600 text-[12px] sm:text-[14px] mt-1 text-justify">
+                          format penamaan : BoQ_Nama Tim_Universitas <br/>
+                          (Contoh : BoQ_CENS_Univeristas Indonesia). <br/> 
+                          Max 10MB
+                        </p>
                         {selectedBoqFile && (
-                          <p className="text-green-600 text-[14px] mt-1">
+                          <p className="text-green-600 text-[12px] sm:text-[14px] mt-1 break-all">
                             ✓ Selected: {selectedBoqFile.name}
                           </p>
                         )}
                         {errors.boqFile && (
-                          <p className="text-red-500 text-[14px] mt-1">{String(errors.boqFile.message)}</p>
+                          <p className="text-red-500 text-[12px] sm:text-[14px] mt-1">{String(errors.boqFile.message)}</p>
                         )}
                       </div>
                     </div>
                   )}
 
                   {/* Navigation Buttons */}
-                  <div className="flex gap-4 mt-8">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8">
                     {currentStep > 1 && (
                       <button
                         type="button"
                         onClick={handlePreviousStep}
-                        className="ml-147 px-8 py-2.5 text-[#0D6B6B] underline hover:text-[#5BA8A6] transition-colors text-[18px]"
+                        className="sm:ml-0 px-6 sm:px-8 py-2 sm:py-2.5 text-[#0D6B6B] underline hover:text-[#5BA8A6] transition-colors text-[16px] sm:text-[18px] order-2 sm:order-1"
                       >
                         Previous
                       </button>
@@ -359,7 +363,7 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                       <button
                         type="button"
                         onClick={handleNextStep}
-                        className="ml-auto px-10 py-2.5 bg-gradient-to-l from-[#6EAF5F] to-[#03695E] text-white rounded-full font-semibold hover:bg-gray-500 hover:text-[#5BA8A6] transition-colors duration-500 shadow-lg text-[14px]"
+                        className="sm:ml-auto px-8 sm:px-10 py-2 sm:py-2.5 bg-gradient-to-l from-[#6EAF5F] to-[#03695E] text-white rounded-full font-semibold hover:bg-gray-500 hover:text-[#5BA8A6] transition-colors duration-500 shadow-lg text-[13px] sm:text-[14px] order-1 sm:order-2"
                       >
                         Next
                       </button>
@@ -369,7 +373,7 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                       <button
                         type="submit"
                         disabled={isLoading}
-                        className="ml-auto px-10 py-2.5 bg-gradient-to-r from-[#03695E] to-[#6EAF5F] text-white rounded-full font-semibold hover:text-[#5BA8A6] transition-colors duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-[14px]"
+                        className="sm:ml-auto px-8 sm:px-10 py-2 sm:py-2.5 bg-gradient-to-r from-[#03695E] to-[#6EAF5F] text-white rounded-full font-semibold hover:text-[#5BA8A6] transition-colors duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-[13px] sm:text-[14px] order-1 sm:order-2"
                       >
                         {isLoading ? 'Submitting...' : 'Submit'}
                       </button>
