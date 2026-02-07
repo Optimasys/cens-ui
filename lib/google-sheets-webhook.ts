@@ -1,8 +1,5 @@
 /**
  * Google Sheets webhook utilities
- *
- * This module handles triggering Google Apps Script webhooks to automatically
- * update Google Sheets when new submissions are made.
  */
 
 import axios from 'axios';
@@ -20,6 +17,8 @@ export type StudentPayload = {
   university: string;
   major: string;
 };
+
+/* ================= IEC REGISTRATION ================= */
 
 export type CompetitionSheetsPayload = {
   submissionType: 'iec-regis';
@@ -39,6 +38,7 @@ export type CompetitionSheetsPayload = {
   };
 };
 
+/* ================= IEC SUBMISSION ================= */
 
 export type IecSubmissionSheetsPayload = {
   submissionType: 'iec-submission';
@@ -56,7 +56,8 @@ export type IecSubmissionSheetsPayload = {
   fileUrl: string;
 };
 
-// National Tender Payload
+/* ================= NTC REGISTRATION ================= */
+
 export type NtcCompetitionSheetsPayload = {
   submissionType: 'ntc-regis';
   timestamp: string;
@@ -75,6 +76,7 @@ export type NtcCompetitionSheetsPayload = {
   };
 };
 
+/* ================= NTC SUBMISSION (UPDATED) ================= */
 
 export type NtcSubmissionSheetsPayload = {
   submissionType: 'ntc-submission';
@@ -87,16 +89,22 @@ export type NtcSubmissionSheetsPayload = {
   lineId: string;
   email: string;
   university: string;
-  subtheme: string;
 
-  fileUrl: string;
+  // ✅ NEW
+  proposalPdfUrl: string;
+  boqFileUrl: string;
 };
 
-// Future extension: add EventSheetsPayload here
-export type SheetsPayload = CompetitionSheetsPayload | IecSubmissionSheetsPayload | NtcCompetitionSheetsPayload | NtcSubmissionSheetsPayload;
+/* ================= UNION ================= */
+
+export type SheetsPayload =
+  | CompetitionSheetsPayload
+  | IecSubmissionSheetsPayload
+  | NtcCompetitionSheetsPayload
+  | NtcSubmissionSheetsPayload;
 
 /* =========================================================
- * Trigger Google Sheets Webhook
+ * Trigger Webhook
  * ======================================================= */
 
 export async function triggerSheetsUpdate(
@@ -105,32 +113,27 @@ export async function triggerSheetsUpdate(
 ): Promise<{ success: boolean; message: string }> {
   try {
     if (!webhookUrl) {
-      throw new Error('Google Sheets webhook URL is not configured');
+      throw new Error('Webhook URL not configured');
     }
 
     const response = await axios.post(webhookUrl, data, {
       timeout: 30000,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
     });
 
-    if (response.status !== 200) {
-      throw new Error(`Webhook returned status ${response.status}`);
-    }
-
     return {
-      success: true,
-      message: 'Google Sheets updated successfully',
+      success: response.status === 200,
+      message: 'Google Sheets updated',
     };
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
+    const message =
+      error instanceof Error ? error.message : 'Unknown error';
+
     console.error('Sheets webhook error:', message);
 
-    // Do not fail the submission if the webhook fails
     return {
       success: false,
-      message: `Sheets update failed: ${message}`,
+      message,
     };
   }
 }
@@ -139,9 +142,6 @@ export async function triggerSheetsUpdate(
  * Utils
  * ======================================================= */
 
-/**
- * Validate that the webhook URL is properly configured
- */
 export function validateWebhookUrl(url: string): boolean {
   try {
     new URL(url);
@@ -151,41 +151,22 @@ export function validateWebhookUrl(url: string): boolean {
   }
 }
 
-/**
- * Format submission data for Google Sheets
- */
-export function formatDataForSheets(
-  submissionType: 'iec-regis',
-  data: Omit<CompetitionSheetsPayload, 'submissionType' | 'timestamp'>
-): CompetitionSheetsPayload;
-export function formatDataForSheets(
-  submissionType: 'iec-submission',
-  data: Omit<IecSubmissionSheetsPayload, 'submissionType' | 'timestamp'>
-): IecSubmissionSheetsPayload;
-export function formatDataForSheets(
-  submissionType: 'ntc-regis',
-  data: Omit<NtcCompetitionSheetsPayload, 'submissionType' | 'timestamp'>
-): NtcCompetitionSheetsPayload;
+/* =========================================================
+ * Format Data
+ * ======================================================= */
 
-export function formatDataForSheets(
-  submissionType: 'ntc-submission',
-  data: Omit<NtcSubmissionSheetsPayload, 'submissionType' | 'timestamp'>
-): NtcSubmissionSheetsPayload;
-export function formatDataForSheets(
-  submissionType:
-    | 'iec-regis'
-    | 'iec-submission'
-    | 'ntc-regis'
-    | 'ntc-submission',
-  data:
-    | Omit<CompetitionSheetsPayload, 'submissionType' | 'timestamp'>
-    | Omit<IecSubmissionSheetsPayload, 'submissionType' | 'timestamp'>
-    | Omit<NtcCompetitionSheetsPayload, 'submissionType' | 'timestamp'>
-    | Omit<NtcSubmissionSheetsPayload, 'submissionType' | 'timestamp'>
-): SheetsPayload {
+export function formatDataForSheets<
+  T extends SheetsPayload['submissionType']
+>(
+  submissionType: T,
+  data: Omit<
+    Extract<SheetsPayload, { submissionType: T }>,
+    'submissionType' | 'timestamp'
+  >
+): Extract<SheetsPayload, { submissionType: T }> {
   return {
     submissionType,
     timestamp: new Date().toISOString(),
     ...data,
-  } as SheetsPayload;
+  } as Extract<SheetsPayload, { submissionType: T }>;
 }

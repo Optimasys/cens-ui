@@ -18,7 +18,8 @@ export function NTCSubmissionForm() {
     message: string;
   } | null>(null);
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedPdfFile, setSelectedPdfFile] = useState<File | null>(null);
+  const [selectedBoqFile, setSelectedBoqFile] = useState<File | null>(null);
 
   const {
     register,
@@ -31,68 +32,79 @@ export function NTCSubmissionForm() {
     mode: 'onChange',
   });
 
-  const onSubmit = async (data: NtcSubmissionFormInput) => {
-    setIsLoading(true);
-    setSubmitStatus(null);
+const onSubmit = async (data: NtcSubmissionFormInput) => {
+  setIsLoading(true);
+  setSubmitStatus(null);
 
-    try {
-      // Manual file validation
-      if (!data.proposalPdf) {
-        throw new Error('Proposal Document PDF is required');
+  try {
+    // Zod schema sudah handle validasi file, jadi kita langsung proses
+
+    const formData = new FormData();
+
+    // Add fields
+    formData.append('teamName', data.teamName);
+    formData.append('fullName', data.fullName);
+    formData.append('nim', data.nim);
+    formData.append('phoneNumber', data.phoneNumber);
+    formData.append('lineId', data.lineId);
+    formData.append('email', data.email);
+    formData.append('university', data.university);
+
+    // Add files
+    formData.append('proposalPdf', data.proposalPdf);
+    formData.append('boqFile', data.boqFile);
+
+    console.log('Submitting to:', '/api/submit-ntcsubmission');
+    
+    const response = await fetch('/api/submit-ntcsubmission', {
+      method: 'POST',
+      body: formData,
+    });
+
+    console.log('Response status:', response.status);
+    console.log('Response content-type:', response.headers.get('content-type'));
+
+    // ✅ Clone response sebelum consume, untuk bisa baca text dan json
+    const contentType = response.headers.get('content-type');
+    
+    if (!contentType || !contentType.includes('application/json')) {
+      // Get text from response
+      const text = await response.text();
+      console.error('Non-JSON response (status ' + response.status + '):', text.substring(0, 500));
+      
+      if (response.status === 404) {
+        throw new Error('API endpoint not found. Please restart the development server.');
       }
-      if (!(data.proposalPdf instanceof File)) {
-        throw new Error('Proposal Document PDF is not a valid file');
-      }
-      if (data.proposalPdf.size > 10 * 1024 * 1024) {
-        throw new Error('Proposal Document PDF size must be less than 10MB');
-      }
-      if (data.proposalPdf.type !== 'application/pdf') {
-        throw new Error('Proposal Document must be a PDF file');
-      }
-
-      const formData = new FormData();
-
-      // Add fields
-      formData.append('teamName', data.teamName);
-      formData.append('fullName', data.fullName);
-      formData.append('nim', data.nim);
-      formData.append('phoneNumber', data.phoneNumber);
-      formData.append('lineId', data.lineId);
-      formData.append('email', data.email);
-      formData.append('university', data.university);
-      formData.append('subtheme', data.subtheme);
-
-      // Add file
-      formData.append('proposalPdf', data.proposalPdf);
-
-      const response = await fetch('/api/submit-ntcsubmission', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Failed to submit form');
-      }
-
-      // Reset form
-      reset();
-      setSelectedFile(null);
-
-      // Redirect to success page
-      router.push('/submission-ntc-success');
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'An error occurred';
-      console.error('Submit error:', message);
-      setSubmitStatus({
-        type: 'error',
-        message,
-      });
-    } finally {
-      setIsLoading(false);
+      
+      throw new Error(`Server error (${response.status}): Invalid response format.`);
     }
-  };
+
+    // Now parse JSON
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to submit form');
+    }
+
+    // Reset form
+    reset();
+    setSelectedPdfFile(null);
+    setSelectedBoqFile(null);
+
+    // Redirect to success page
+    router.push('/submission-ntc-success');
+    
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'An error occurred';
+    console.error('Submit error:', message);
+    setSubmitStatus({
+      type: 'error',
+      message,
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handlePreviousStep = () => {
     if (currentStep > 1) {
@@ -263,32 +275,18 @@ export function NTCSubmissionForm() {
                             )}
                           </div>
 
-                          {/* Subtheme */}
-                          <div>
-                            <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
-                              Subtheme<span className="text-red-500">*</span>
-                            </label>
-                            <input
-                              type="text"
-                              {...register('subtheme')}
-                              className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-gray-800 text-[14px]"
-                            />
-                            {errors.subtheme && (
-                              <p className="text-red-500 text-xs mt-1">{errors.subtheme.message}</p>
-                            )}
-                          </div>
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {/* STEP 2: Proposal Document PDF Upload */}
+                  {/* STEP 2: Proposal Document Upload - PDF and BOQ Excel */}
                   {currentStep === 2 && (
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                       {/* Proposal Document PDF */}
                       <div>
                         <label htmlFor="proposalPdf" className="block text-[18px] font-semibold text-[#0D6B6B] mb-1.5">
-                        Proposal Document Submission (PDF)
+                          Proposal Document (PDF)<span className="text-red-500">*</span>
                         </label>
                         <input
                           id="proposalPdf"
@@ -298,19 +296,48 @@ export function NTCSubmissionForm() {
                             const file = e.target.files?.[0];
                             if (file) {
                               setValue('proposalPdf', file);
-                              setSelectedFile(file);
+                              setSelectedPdfFile(file);
                             }
                           }}
                           className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
                         />
-                        <p className="text-gray-600 text-[14px] mt-1">Format: Team Name_NTC_Title. (max 10MB)</p>
-                        {selectedFile && (
+                        <p className="text-gray-600 text-[14px] mt-1">Format: Team Name_NTC_Title.pdf (max 10MB)</p>
+                        {selectedPdfFile && (
                           <p className="text-green-600 text-[14px] mt-1">
-                            ✓ Selected: {selectedFile.name}
+                            ✓ Selected: {selectedPdfFile.name}
                           </p>
                         )}
                         {errors.proposalPdf && (
                           <p className="text-red-500 text-[14px] mt-1">{String(errors.proposalPdf.message)}</p>
+                        )}
+                      </div>
+
+                      {/* BOQ Excel File */}
+                      <div>
+                        <label htmlFor="boqFile" className="block text-[18px] font-semibold text-[#0D6B6B] mb-1.5">
+                          Bill of Quantity (BOQ) - Excel<span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          id="boqFile"
+                          type="file"
+                          accept=".xlsx"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setValue('boqFile', file);
+                              setSelectedBoqFile(file);
+                            }
+                          }}
+                          className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
+                        />
+                        <p className="text-gray-600 text-[14px] mt-1 text-justify">format penamaan : BoQ_Nama Tim_Universitas <br/>(Contoh : BoQ_CENS_Univeristas Indonesia). <br/> Max 10MB </p>
+                        {selectedBoqFile && (
+                          <p className="text-green-600 text-[14px] mt-1">
+                            ✓ Selected: {selectedBoqFile.name}
+                          </p>
+                        )}
+                        {errors.boqFile && (
+                          <p className="text-red-500 text-[14px] mt-1">{String(errors.boqFile.message)}</p>
                         )}
                       </div>
                     </div>

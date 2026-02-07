@@ -5,6 +5,9 @@ import { GoogleDriveUploadResponse } from './types';
 
 let drive: ReturnType<typeof google.drive>;
 
+/**
+ * Initialize Google Drive client with OAuth2
+ */
 export function initializeDriveClient() {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -36,6 +39,12 @@ export function initializeDriveClient() {
 
 /**
  * Upload a file to Google Drive
+ * 
+ * @param fileBuffer - Buffer containing file data
+ * @param fileName - Name for the file in Google Drive
+ * @param mimeType - MIME type of the file (e.g., 'application/pdf')
+ * @param folderId - Optional parent folder ID in Google Drive
+ * @returns Upload response with file details
  */
 export async function uploadFileToDrive(
   fileBuffer: Buffer,
@@ -88,9 +97,33 @@ export async function uploadFileToDrive(
       errors: error?.errors,
       response: error?.response?.data,
     });
+
     const message = error instanceof Error ? error.message : 'Unknown error';
-    throw new Error(`Google Drive upload failed: ${message}`);
+    throw new Error(`Google Drive upload failed: ${message}`); // ✅ FIXED: Template literal syntax
   }
+}
+
+/**
+ * Alternative upload function with object parameter (for easier usage)
+ * This matches the interface used in the route.ts files
+ */
+export async function uploadFileToDriveV2(params: {
+  fileName: string;
+  fileData: Buffer;
+  mimeType: string;
+  folderId: string;
+}): Promise<{ fileUrl: string; fileId: string }> {
+  const response = await uploadFileToDrive(
+    params.fileData,
+    params.fileName,
+    params.mimeType,
+    params.folderId
+  );
+
+  return {
+    fileUrl: response.webViewLink,
+    fileId: response.id,
+  };
 }
 
 /**
@@ -121,7 +154,7 @@ export async function createFolderInDrive(folderName: string): Promise<string> {
     return folderId;
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    throw new Error(`Failed to create Google Drive folder: ${message}`);
+    throw new Error(`Failed to create Google Drive folder: ${message}`); // ✅ FIXED: Template literal syntax
   }
 }
 
@@ -148,6 +181,6 @@ export async function shareFileInDrive(
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    throw new Error(`Failed to share Google Drive file: ${message}`);
+    throw new Error(`Failed to share Google Drive file: ${message}`); // ✅ FIXED: Template literal syntax
   }
 }

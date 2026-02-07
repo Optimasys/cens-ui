@@ -63,7 +63,7 @@ export function IECSubmissionForm() {
       formData.append('subtheme', data.subtheme);
 
       // Add file
-      formData.append('essayPdf', data.essayPdf);
+      formData.append('essayPDF', data.essayPdf);
 
       const response = await fetch('/api/submit-iecsubmission', {
         method: 'POST',

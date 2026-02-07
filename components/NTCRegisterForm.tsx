@@ -127,7 +127,7 @@ export function NTCRegisterForm({ competitionType }: CompetitionFormProps) {
     setSelectedFiles({ studentIdsScan: null, paymentProof: null, twibbonProof: null });
     
     // Redirect to success page
-    router.push('/registration-iec-success');
+    router.push('/registration-ntc-success');
 
   } catch (error) {
     const message = error instanceof Error ? error.message : 'An error occurred';
