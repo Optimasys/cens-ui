@@ -76,7 +76,7 @@ export type NtcCompetitionSheetsPayload = {
   };
 };
 
-/* ================= NTC SUBMISSION ================= */
+/* ================= NTC SUBMISSION (UPDATED) ================= */
 
 export type NtcSubmissionSheetsPayload = {
   submissionType: 'ntc-submission';
@@ -90,7 +90,9 @@ export type NtcSubmissionSheetsPayload = {
   email: string;
   university: string;
 
-  fileUrl: string;
+  // ✅ NEW
+  proposalPdfUrl: string;
+  boqFileUrl: string;
 };
 
 /* ================= UNION ================= */
@@ -150,7 +152,7 @@ export function validateWebhookUrl(url: string): boolean {
 }
 
 /* =========================================================
- * Format Data (NO OVERLOAD)
+ * Format Data
  * ======================================================= */
 
 export function formatDataForSheets<

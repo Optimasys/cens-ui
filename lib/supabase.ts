@@ -22,8 +22,15 @@ export type NTCSubmission = {
   line_id: string;
   email: string;
   university: string;
-  file_id: string;
-  file_url: string;
+
+  // ✅ PDF
+  proposal_file_id: string;
+  proposal_file_url: string;
+
+  // ✅ EXCEL
+  excel_file_id: string;
+  excel_file_url: string;
+
   created_at?: string;
   updated_at?: string;
 };

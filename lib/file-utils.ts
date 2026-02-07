@@ -39,7 +39,7 @@ export function isFileSizeValid(file: File, maxSizeMB: number = 10): boolean {
 /**
  * Validate file type
  */
-export function isFileTypeValid(file: File, allowedTypes: string[] = ['application/pdf']): boolean {
+export function isFileTypeValid(file: File, allowedTypes: string[] = ['application/pdf', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']): boolean {
   return allowedTypes.includes(file.type);
 }
 

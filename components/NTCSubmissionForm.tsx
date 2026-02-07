@@ -18,7 +18,8 @@ export function NTCSubmissionForm() {
     message: string;
   } | null>(null);
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedPdfFile, setSelectedPdfFile] = useState<File | null>(null);
+  const [selectedBoqFile, setSelectedBoqFile] = useState<File | null>(null);
 
   const {
     register,
@@ -36,19 +37,7 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
   setSubmitStatus(null);
 
   try {
-    // Manual file validation
-    if (!data.proposalPdf) {
-      throw new Error('Proposal Document PDF is required');
-    }
-    if (!(data.proposalPdf instanceof File)) {
-      throw new Error('Proposal Document PDF is not a valid file');
-    }
-    if (data.proposalPdf.size > 10 * 1024 * 1024) {
-      throw new Error('Proposal Document PDF size must be less than 10MB');
-    }
-    if (data.proposalPdf.type !== 'application/pdf') {
-      throw new Error('Proposal Document must be a PDF file');
-    }
+    // Zod schema sudah handle validasi file, jadi kita langsung proses
 
     const formData = new FormData();
 
@@ -61,8 +50,9 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
     formData.append('email', data.email);
     formData.append('university', data.university);
 
-    // Add file
+    // Add files
     formData.append('proposalPdf', data.proposalPdf);
+    formData.append('boqFile', data.boqFile);
 
     console.log('Submitting to:', '/api/submit-ntcsubmission');
     
@@ -98,7 +88,8 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
 
     // Reset form
     reset();
-    setSelectedFile(null);
+    setSelectedPdfFile(null);
+    setSelectedBoqFile(null);
 
     // Redirect to success page
     router.push('/submission-ntc-success');
@@ -289,13 +280,13 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                     </div>
                   )}
 
-                  {/* STEP 2: Proposal Document PDF Upload */}
+                  {/* STEP 2: Proposal Document Upload - PDF and BOQ Excel */}
                   {currentStep === 2 && (
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                       {/* Proposal Document PDF */}
                       <div>
                         <label htmlFor="proposalPdf" className="block text-[18px] font-semibold text-[#0D6B6B] mb-1.5">
-                        Proposal Document Submission (PDF)
+                          Proposal Document (PDF)<span className="text-red-500">*</span>
                         </label>
                         <input
                           id="proposalPdf"
@@ -305,19 +296,48 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                             const file = e.target.files?.[0];
                             if (file) {
                               setValue('proposalPdf', file);
-                              setSelectedFile(file);
+                              setSelectedPdfFile(file);
                             }
                           }}
                           className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
                         />
-                        <p className="text-gray-600 text-[14px] mt-1">Format: Team Name_NTC_Title. (max 10MB)</p>
-                        {selectedFile && (
+                        <p className="text-gray-600 text-[14px] mt-1">Format: Team Name_NTC_Title.pdf (max 10MB)</p>
+                        {selectedPdfFile && (
                           <p className="text-green-600 text-[14px] mt-1">
-                            ✓ Selected: {selectedFile.name}
+                            ✓ Selected: {selectedPdfFile.name}
                           </p>
                         )}
                         {errors.proposalPdf && (
                           <p className="text-red-500 text-[14px] mt-1">{String(errors.proposalPdf.message)}</p>
+                        )}
+                      </div>
+
+                      {/* BOQ Excel File */}
+                      <div>
+                        <label htmlFor="boqFile" className="block text-[18px] font-semibold text-[#0D6B6B] mb-1.5">
+                          Bill of Quantity (BOQ) - Excel<span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          id="boqFile"
+                          type="file"
+                          accept=".xlsx"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setValue('boqFile', file);
+                              setSelectedBoqFile(file);
+                            }
+                          }}
+                          className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
+                        />
+                        <p className="text-gray-600 text-[14px] mt-1 text-justify">format penamaan : BoQ_Nama Tim_Universitas <br/>(Contoh : BoQ_CENS_Univeristas Indonesia). <br/> Max 10MB </p>
+                        {selectedBoqFile && (
+                          <p className="text-green-600 text-[14px] mt-1">
+                            ✓ Selected: {selectedBoqFile.name}
+                          </p>
+                        )}
+                        {errors.boqFile && (
+                          <p className="text-red-500 text-[14px] mt-1">{String(errors.boqFile.message)}</p>
                         )}
                       </div>
                     </div>

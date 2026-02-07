@@ -133,9 +133,15 @@ export const iecSubmissionFormSchema = z.object({
 export type IecSubmissionFormInput = z.infer<typeof iecSubmissionFormSchema>;
 
 export const ntcSubmissionFormSchema = z.object({
-  teamName: z.string().min(1, 'Team name is required').max(255),
+  teamName: z
+    .string()
+    .min(1, 'Team name is required')
+    .max(255),
 
-  fullName: z.string().min(1, 'Full name is required').max(255),
+  fullName: z
+    .string()
+    .min(1, 'Full name is required')
+    .max(255),
 
   nim: z
     .string()
@@ -149,17 +155,48 @@ export const ntcSubmissionFormSchema = z.object({
     .min(12, 'Phone number must be at least 12 digits')
     .max(20),
 
-  lineId: z.string().min(1, 'LINE ID is required').max(100),
+  lineId: z
+    .string()
+    .min(1, 'LINE ID is required')
+    .max(100),
 
-  email: z.string().email('Invalid email address').max(255),
+  email: z
+    .string()
+    .email('Invalid email address')
+    .max(255),
 
-  university: z.string().min(1, 'University is required').max(255),
+  university: z
+    .string()
+    .min(1, 'University is required')
+    .max(255),
 
-  proposalPdf: z.instanceof(File).refine(
-    (file) => file.type === 'application/pdf',
-    'Proposal document must be a PDF file'
-  ),
+  // ✅ PDF VALIDATION
+  proposalPdf: z
+    .instanceof(File)
+    .refine(
+      (file) => file.type === 'application/pdf',
+      'Proposal must be a PDF file'
+    )
+    .refine(
+      (file) => file.size <= 10 * 1024 * 1024,
+      'PDF must be less than 10MB'
+    ),
+
+  // ✅ EXCEL VALIDATION
+  boqFile: z
+    .instanceof(File)
+    .refine(
+      (file) =>
+        file.type ===
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'BOQ must be an Excel (.xlsx) file'
+    )
+    .refine(
+      (file) => file.size <= 10 * 1024 * 1024,
+      'Excel file must be less than 10MB'
+    ),
 });
+
 
 
 export type NtcSubmissionFormInput = z.infer<typeof ntcSubmissionFormSchema>;
