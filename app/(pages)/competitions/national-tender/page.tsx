@@ -20,7 +20,7 @@
 "use client";
 
 import type { NextPage } from "next";
-import { Span } from "next/dist/trace";
+// import { Span } from "next/dist/trace";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -30,10 +30,10 @@ const NTC: NextPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState<1 | 2>(1);
 
-  const openModal = (theme: 1 | 2) => {
-    setSelectedTheme(theme);
-    setShowModal(true);
-  };
+  // const openModal = (theme: 1 | 2) => {
+  //   setSelectedTheme(theme);
+  //   setShowModal(true);
+  // };
 
   const closeModal = () => {
     setShowModal(false);
@@ -92,7 +92,7 @@ const NTC: NextPage = () => {
         "
       >
         A national level tender project competition for D3/D4/S1 students from
-        across Indonesia. This competition is a place to train student's abilities
+        across Indonesia. This competition is a place to train student&apos;s abilities
         in estimating building construction projects that also seeks innovation in
         construction costs and its method from the given study case.
       </p>
@@ -121,8 +121,8 @@ const NTC: NextPage = () => {
           text-[40px] sm:text-[50px] md:text-[60px] lg:text-[60px]
           font-bold
         ">
-          "RESILIENT BRIDGE INFRASTRUCTURE FOR RESTORING CONNECTIVITY IN
-           DISASTER-AFFECTED COMMUNITIES"
+          &quot;RESILIENT BRIDGE INFRASTRUCTURE FOR RESTORING CONNECTIVITY IN
+           DISASTER-AFFECTED COMMUNITIES&quot;
         </h2>
       </div>
 
@@ -952,7 +952,7 @@ const NTC: NextPage = () => {
                   {/* FAQ 2 */}
                   <details className="group">
                     <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4 border-t border-white/20 text-justify">
-                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">What should I do when I haven't reached my confirmation email, even though it's been more than 1x24 hours?</span>
+                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">What should I do when I haven&apos;t reached my confirmation email, even though it&apos;s been more than 1x24 hours?</span>
                       <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center border border-white/50 rounded">
                         <svg 
                           className="w-4 h-4 transition-transform duration-300 group-open:rotate-180 text-white" 

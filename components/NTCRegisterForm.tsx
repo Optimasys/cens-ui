@@ -360,14 +360,14 @@ export function NTCRegisterForm({ competitionType }: CompetitionFormProps) {
                           <li className="flex items-start">
                             <span className="mr-2">•</span>
                             <span>
-                              Submit your essay via the following link{' '}
+                              Submit your proposal document via the following link{' '}
                               <Link 
                                 href="/competitions/national-tender/submission" 
                                 className="text-[#0D6B6B] font-semibold underline hover:text-[#5BA8A6] transition-colors"
                               >
                                 Submission Form
                               </Link>
-                              . The deadline for essay submission is{' '}
+                              . The deadline for proposal document submission is{' '}
                               <span className="font-bold">April 13th, 2026</span>.
                             </span>
                           </li>

@@ -114,7 +114,7 @@ export function Navbar() {
                 pathname={pathname}
                 onClick={() => setMobileMenuOpen(false)}
               >
-                About US
+                About Us
               </MobileNavLink>
               <MobileNavLink
                 href="/timeline"
@@ -149,10 +149,10 @@ export function Navbar() {
                   Workshop
                 </MobileDropdownLink>
                 <MobileDropdownLink
-                  href="/events/bootcamp"
+                  href="/events/censcussion"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Bootcamp
+                  CENScussion
                 </MobileDropdownLink>
                 <MobileDropdownLink
                   href="/events/national-summit"

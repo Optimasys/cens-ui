@@ -1,7 +1,7 @@
 "use client";
 
 import type { NextPage } from "next";
-import { Span } from "next/dist/trace";
+// import { Span } from "next/dist/trace";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -1027,7 +1027,7 @@ const IEC: NextPage = () => {
                   {/* FAQ 2 */}
                   <details className="group">
                     <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4 border-t border-white/20 text-justify">
-                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">What should I do when I haven't reached my confirmation email, even though it's been more than 1x24 hours?</span>
+                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">What should I do when I haven&apos;t reached my confirmation email, even though it&apos;s been more than 1x24 hours?</span>
                       <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center border border-white/50 rounded">
                         <svg 
                           className="w-4 h-4 transition-transform duration-300 group-open:rotate-180 text-white" 
@@ -1087,7 +1087,7 @@ const IEC: NextPage = () => {
                   {/* FAQ 5 */}
                   <details className="group">
                     <summary className="flex items-center justify-between cursor-pointer text-white font-[var(--font-made-tommy)] text-[17px] font-normal list-none py-4 border-t border-white/20 text-justify">
-                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">What is the benefit of joining the 23rd CENS UI's Innovative Essay Competition?</span>
+                      <span className="pr-4 group-open:underline group-open:decoration-[#f4e5a2] group-open:underline-offset-[4px] group-open:decoration-2 transition-all duration-300">What is the benefit of joining the 23rd CENS UI&apos;s Innovative Essay Competition?</span>
                       <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center border border-white/50 rounded">
                         <svg 
                           className="w-4 h-4 transition-transform duration-300 group-open:rotate-180 text-white" 
@@ -1100,7 +1100,7 @@ const IEC: NextPage = () => {
                       </div>
                     </summary>
                     <p className="pb-4 text-white/90 text-[15px] leading-relaxed font-[var(--font-made-tommy)] text-justify">
-                      The benefits of joining The 23rd CENS UI'S Innovation Essay Competition are enhancing writing skills, developing critical thinking, expanding knowledge about civil engineering issues relevant to the theme, chance to get recognition and awards.
+                      The benefits of joining The 23rd CENS UI&apos;S Innovation Essay Competition are enhancing writing skills, developing critical thinking, expanding knowledge about civil engineering issues relevant to the theme, chance to get recognition and awards.
                     </p>
                   </details>
 
