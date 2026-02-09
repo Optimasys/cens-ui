@@ -368,7 +368,7 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                                 Submission Form
                               </Link>
                               . The deadline for essay submission is{' '}
-                              <span className="font-bold">April 13th, 2026</span>.
+                              <span className="font-bold">March 13th, 2026</span>.
                             </span>
                           </li>
                         </ul>

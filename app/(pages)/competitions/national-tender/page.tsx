@@ -1160,15 +1160,15 @@ const NTC: NextPage = () => {
                   Contact Person
                 </h3>
                 <p className="text-white text-[20px] sm:text-[30px] font-medium mb-2 font-[var(--font-made-tommy)]">
-                  Olyvia
+                  Rian
                 </p>
                 <a 
-                  href="https://wa.me/6288224221378"
+                  href="https://wa.me/6281381200497"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white text-[18px] sm:text-[30px] font-[var(--font-made-tommy)] hover:text-white transition-colors duration-300 underline"
                 >
-                  https://wa.me/6288224221378
+                  https://wa.me/6281381200497
                 </a>
               </div>
 
