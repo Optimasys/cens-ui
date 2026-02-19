@@ -14,16 +14,75 @@ interface CompetitionFormProps {
 
 type FormStep = 1 | 2 | 3 | 4;
 
+// ─── Upload helper ────────────────────────────────────────────────────────────
+
+type FileType = 'studentIdsScan' | 'paymentProof' | 'twibbonProof';
+
+interface UploadResult {
+  driveId: string;
+  driveUrl: string;
+}
+
+async function uploadSingleFile(
+  file: File,
+  fileType: FileType,
+  teamName: string
+): Promise<UploadResult> {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('fileType', fileType);
+  formData.append('teamName', teamName);
+
+  const response = await fetch('/api/upload-file', {
+    method: 'POST',
+    body: formData,
+  });
+
+  const text = await response.text();
+
+  if (!text) {
+    throw new Error(`Server returned empty response for ${fileType} (status: ${response.status})`);
+  }
+
+  let result;
+  try {
+    result = JSON.parse(text);
+  } catch {
+    throw new Error(`Server returned invalid JSON for ${fileType}: ${text}`);
+  }
+
+  if (!response.ok || !result.success) {
+    throw new Error(result.message || `Failed to upload ${fileType}`);
+  }
+
+  return {
+    driveId: result.data.driveId,
+    driveUrl: result.data.driveUrl,
+  };
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<FormStep>(1);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [uploadProgress, setUploadProgress] = useState<{
+    studentIdsScan: 'idle' | 'uploading' | 'done' | 'error';
+    paymentProof: 'idle' | 'uploading' | 'done' | 'error';
+    twibbonProof: 'idle' | 'uploading' | 'done' | 'error';
+  }>({
+    studentIdsScan: 'idle',
+    paymentProof: 'idle',
+    twibbonProof: 'idle',
+  });
+
   const [submitStatus, setSubmitStatus] = useState<{
     type: 'success' | 'error';
     message: string;
   } | null>(null);
 
-  // Track selected files for display
   const [selectedFiles, setSelectedFiles] = useState<{
     studentIdsScan: File | null;
     paymentProof: File | null;
@@ -53,125 +112,121 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
     setSubmitStatus(null);
 
     try {
-      // Manual file validation
-      const validateFile = (file: any, fieldName: string) => {
-        if (!file) {
-          throw new Error(`${fieldName} is required`);
-        }
-        if (!(file instanceof File)) {
-          throw new Error(`${fieldName} is not a valid file`);
-        }
-        if (file.size > 10 * 1024 * 1024) {
-          throw new Error(`${fieldName} size must be less than 10MB`);
+      // ── Step 1: Validate files ──────────────────────────────────────────────
+      const filesToUpload: { file: File; type: FileType }[] = [
+        { file: data.studentIdsScan as File, type: 'studentIdsScan' },
+        { file: data.paymentProof as File, type: 'paymentProof' },
+        { file: data.twibbonProof as File, type: 'twibbonProof' },
+      ];
+
+      for (const { file, type } of filesToUpload) {
+        if (!file || !(file instanceof File)) {
+          throw new Error(`${type} is required`);
         }
         if (file.type !== 'application/pdf') {
-          throw new Error(`${fieldName} must be a PDF file`);
+          throw new Error(`${type} must be a PDF file`);
         }
-      };
+        if (file.size > 20 * 1024 * 1024) {
+          throw new Error(`${type} must be less than 20MB`);
+        }
+      }
 
-      validateFile(data.studentIdsScan, 'Student IDs Scan');
-      validateFile(data.paymentProof, 'Payment Proof');
-      validateFile(data.twibbonProof, 'Twibbon Proof');
+      // ── Step 2: Upload files one by one to /api/upload-file ────────────────
+      const teamName = data.teamName;
+      const uploadResults: Record<FileType, UploadResult> = {} as Record<FileType, UploadResult>;
 
-      const formData = new FormData();
+      for (const { file, type } of filesToUpload) {
+        setUploadProgress(prev => ({ ...prev, [type]: 'uploading' }));
+        try {
+          uploadResults[type] = await uploadSingleFile(file, type, teamName);
+          setUploadProgress(prev => ({ ...prev, [type]: 'done' }));
+        } catch (err) {
+          setUploadProgress(prev => ({ ...prev, [type]: 'error' }));
+          throw err;
+        }
+      }
 
-      // Add team info
-      formData.append('teamName', data.teamName);
-      formData.append('competitionType', data.competitionType);
+      // ── Step 3: Submit form data as JSON (no files) ────────────────────────
+      const response = await fetch('/api/submit-iecregis', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          teamName: data.teamName,
+          competitionType: data.competitionType,
+          teamLeader: data.teamLeader,
+          student2: data.student2,
+          student3: data.student3,
+          fileIds: {
+            studentIdsScan: uploadResults.studentIdsScan.driveId,
+            paymentProof: uploadResults.paymentProof.driveId,
+            twibbonProof: uploadResults.twibbonProof.driveId,
+          },
+          fileUrls: {
+            studentIdsScan: uploadResults.studentIdsScan.driveUrl,
+            paymentProof: uploadResults.paymentProof.driveUrl,
+            twibbonProof: uploadResults.twibbonProof.driveUrl,
+          },
+        }),
+      });
 
-      // Add team leader
-      formData.append('teamLeader.fullName', data.teamLeader.fullName);
-      formData.append('teamLeader.nim', data.teamLeader.nim);
-      formData.append('teamLeader.phoneNumber', data.teamLeader.phoneNumber);
-      formData.append('teamLeader.lineId', data.teamLeader.lineId);
-      formData.append('teamLeader.email', data.teamLeader.email);
-      formData.append('teamLeader.university', data.teamLeader.university);
-      formData.append('teamLeader.major', data.teamLeader.major);
+      const result = await response.json();
 
-      // Add student 2
-      formData.append('student2.fullName', data.student2.fullName);
-      formData.append('student2.nim', data.student2.nim);
-      formData.append('student2.phoneNumber', data.student2.phoneNumber);
-      formData.append('student2.lineId', data.student2.lineId);
-      formData.append('student2.email', data.student2.email);
-      formData.append('student2.university', data.student2.university);
-      formData.append('student2.major', data.student2.major);
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || 'Failed to submit form');
+      }
 
-      // Add student 3
-      formData.append('student3.fullName', data.student3.fullName);
-      formData.append('student3.nim', data.student3.nim);
-      formData.append('student3.phoneNumber', data.student3.phoneNumber);
-      formData.append('student3.lineId', data.student3.lineId);
-      formData.append('student3.email', data.student3.email);
-      formData.append('student3.university', data.student3.university);
-      formData.append('student3.major', data.student3.major);
+      // ── Step 4: Success ────────────────────────────────────────────────────
+      reset();
+      setSelectedFiles({ studentIdsScan: null, paymentProof: null, twibbonProof: null });
+      setUploadProgress({ studentIdsScan: 'idle', paymentProof: 'idle', twibbonProof: 'idle' });
+      router.push('/registration-iec-success');
 
-      // Add files
-      formData.append('studentIdsScan', data.studentIdsScan);
-      formData.append('paymentProof', data.paymentProof);
-      formData.append('twibbonProof', data.twibbonProof);
-
-          const response = await fetch('/api/submit-iecregis', {
-      method: 'POST',
-      body: formData,
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to submit form');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An error occurred';
+      console.error('Submit error:', message);
+      setSubmitStatus({ type: 'error', message });
+    } finally {
+      setIsLoading(false);
     }
-
-    // Reset form
-    reset();
-    setSelectedFiles({ studentIdsScan: null, paymentProof: null, twibbonProof: null });
-    
-    // Redirect to success page
-    router.push('/registration-iec-success');
-
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'An error occurred';
-    console.error('Submit error:', message);
-    setSubmitStatus({
-      type: 'error',
-      message,
-    });
-  } finally {
-    setIsLoading(false);
-  }
   };
 
   const handlePreviousStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep((currentStep - 1) as FormStep);
-    }
+    if (currentStep > 1) setCurrentStep((currentStep - 1) as FormStep);
   };
 
-  const handleNextStep = async () => {
-    if (currentStep < 4) {
-      setCurrentStep((currentStep + 1) as FormStep);
-    }
+  const handleNextStep = () => {
+    if (currentStep < 4) setCurrentStep((currentStep + 1) as FormStep);
+  };
+
+  const progressLabel: Record<string, string> = {
+    idle: '',
+    uploading: '⏳ Uploading...',
+    done: '✓ Uploaded',
+    error: '✗ Upload failed',
+  };
+
+  const progressColor: Record<string, string> = {
+    idle: '',
+    uploading: 'text-yellow-600',
+    done: 'text-green-600',
+    error: 'text-red-600',
   };
 
   return (
-    <div 
+    <div
       className="min-h-screen py-8 px-4 bg-cover bg-center bg-no-repeat relative"
-      style={{
-        backgroundImage: 'url(/images/bg-register.png)',
-      }}
+      style={{ backgroundImage: 'url(/images/bg-register.png)' }}
     >
       {/* Background overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#219ACC] via-[#F4E5A2] to-[#219ACC] opacity-80 pointer-events-none" />
-      
+
       <div className="relative z-10 max-w-5xl mx-auto">
-        {/* Main container with step indicators */}
         <div className="relative">
-          {/* Main Form Container - Cream/Beige */}
           <div className="bg-[#E6E9D8] rounded-3xl shadow-2xl overflow-hidden">
             <div className="flex">
               {/* Form Content */}
               <div className="flex-1 p-8 lg:p-12">
-                
+
                 {/* Header */}
                 <div className="mb-8">
                   <h2 className="text-[28px] lg:text-[32px] font-bold text-[#0D6B6B] mb-1 font-[var(--font-gretaros)]">
@@ -195,10 +250,10 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                 )}
 
                 <form onSubmit={handleSubmit(onSubmit)}>
+
                   {/* STEP 1: Team Name and Team Leader */}
                   {currentStep === 1 && (
                     <div className="space-y-4">
-                      {/* Team Name */}
                       <div>
                         <label htmlFor="teamName" className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
                           Team Name<span className="text-red-500">*</span>
@@ -214,12 +269,10 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                           <p className="text-red-500 text-xs mt-1">{errors.teamName.message}</p>
                         )}
                       </div>
-
                       <div className="pt-3">
                         <h4 className="text-[16px] font-bold text-[#0D6B6B] mb-4 font-[var(--font-gretaros)]">
                           Team Leader
                         </h4>
-
                         <StudentInfoFields register={register} errors={errors} prefix="teamLeader" />
                       </div>
                     </div>
@@ -245,12 +298,27 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                     </div>
                   )}
 
-{/* STEP 4: File Uploads */}
+                  {/* STEP 4: File Uploads */}
                   {currentStep === 4 && (
                     <div className="space-y-4">
                       <h3 className="text-[18px] font-bold text-[#0D6B6B] mb-4 font-[var(--font-gretaros)]">
                         Document Uploads
                       </h3>
+
+                      {/* Upload status banner */}
+                      {isLoading && (
+                        <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 text-blue-800 text-[14px] space-y-1">
+                          <p className="font-semibold">Uploading your documents, please wait...</p>
+                          {(['studentIdsScan', 'paymentProof', 'twibbonProof'] as FileType[]).map((type) => (
+                            <p key={type} className={progressColor[uploadProgress[type]]}>
+                              {type === 'studentIdsScan' && 'Student IDs Scan'}
+                              {type === 'paymentProof' && 'Payment Proof'}
+                              {type === 'twibbonProof' && 'Twibbon Proof'}
+                              {uploadProgress[type] !== 'idle' && ` — ${progressLabel[uploadProgress[type]]}`}
+                            </p>
+                          ))}
+                        </div>
+                      )}
 
                       {/* Student IDs Scan */}
                       <div>
@@ -261,19 +329,23 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                           id="studentIdsScan"
                           type="file"
                           accept=".pdf"
+                          disabled={isLoading}
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
                               setValue('studentIdsScan', file);
                               setSelectedFiles(prev => ({ ...prev, studentIdsScan: file }));
+                              setUploadProgress(prev => ({ ...prev, studentIdsScan: 'idle' }));
                             }
                           }}
-                          className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
+                          className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer disabled:opacity-50"
                         />
                         <p className="text-gray-600 text-[14px] mt-1">Format: Team Name_Student ID (Example: Success_Student ID)</p>
                         {selectedFiles.studentIdsScan && (
-                          <p className="text-green-600 text-[14px] mt-1">
-                            ✓ Selected: {selectedFiles.studentIdsScan.name}
+                          <p className={`text-[14px] mt-1 ${progressColor[uploadProgress.studentIdsScan] || 'text-green-600'}`}>
+                            {uploadProgress.studentIdsScan !== 'idle'
+                              ? progressLabel[uploadProgress.studentIdsScan]
+                              : `✓ Selected: ${selectedFiles.studentIdsScan.name}`}
                           </p>
                         )}
                         {errors.studentIdsScan && (
@@ -290,19 +362,23 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                           id="paymentProof"
                           type="file"
                           accept=".pdf"
+                          disabled={isLoading}
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
                               setValue('paymentProof', file);
                               setSelectedFiles(prev => ({ ...prev, paymentProof: file }));
+                              setUploadProgress(prev => ({ ...prev, paymentProof: 'idle' }));
                             }
                           }}
-                          className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
+                          className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer disabled:opacity-50"
                         />
                         <p className="text-gray-600 text-[14px] mt-1">Format: Team Name_Payment Proof (Example: Success_Payment Proof).</p>
                         {selectedFiles.paymentProof && (
-                          <p className="text-green-600 text-[14px] mt-1">
-                            ✓ Selected: {selectedFiles.paymentProof.name}
+                          <p className={`text-[14px] mt-1 ${progressColor[uploadProgress.paymentProof] || 'text-green-600'}`}>
+                            {uploadProgress.paymentProof !== 'idle'
+                              ? progressLabel[uploadProgress.paymentProof]
+                              : `✓ Selected: ${selectedFiles.paymentProof.name}`}
                           </p>
                         )}
                         {errors.paymentProof && (
@@ -310,7 +386,7 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                         )}
                       </div>
 
-                      {/* Twibbon Upload Proof */}
+                      {/* Twibbon Proof */}
                       <div>
                         <label htmlFor="twibbonProof" className="block text-[18px] font-semibold text-[#0D6B6B] mb-1.5">
                           Twibbon Upload Proof (PDF)<span className="text-red-500">*</span>
@@ -319,19 +395,23 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                           id="twibbonProof"
                           type="file"
                           accept=".pdf"
+                          disabled={isLoading}
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
                               setValue('twibbonProof', file);
                               setSelectedFiles(prev => ({ ...prev, twibbonProof: file }));
+                              setUploadProgress(prev => ({ ...prev, twibbonProof: 'idle' }));
                             }
                           }}
-                          className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
+                          className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer disabled:opacity-50"
                         />
                         <p className="text-gray-600 text-[14px] mt-1">Format: Team Name_Twibbon Proof (Example: Success_Twibbon Proof).</p>
                         {selectedFiles.twibbonProof && (
-                          <p className="text-green-600 text-[14px] mt-1">
-                            ✓ Selected: {selectedFiles.twibbonProof.name}
+                          <p className={`text-[14px] mt-1 ${progressColor[uploadProgress.twibbonProof] || 'text-green-600'}`}>
+                            {uploadProgress.twibbonProof !== 'idle'
+                              ? progressLabel[uploadProgress.twibbonProof]
+                              : `✓ Selected: ${selectedFiles.twibbonProof.name}`}
                           </p>
                         )}
                         {errors.twibbonProof && (
@@ -347,13 +427,13 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                             <span className="mr-2">•</span>
                             <span>
                               Each participant must follow the @cens.ui account on Instagram, share an Instagram post using our Twibbon, and post our poster on your Instagram story. The materials can be found at this link:{' '}
-                              <a 
-                                href="https://drive.google.com/drive/folders/1fR7h48vmEUz4ij9lrv5EXOPB1Iik0598" 
-                                target="_blank" 
+                              <a
+                                href="https://drive.google.com/drive/folders/1fR7h48vmEUz4ij9lrv5EXOPB1Iik0598"
+                                target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-[#0D6B6B] font-semibold underline hover:text-[#5BA8A6] transition-colors"
                               >
-                                <br/> Twibbon Link
+                                <br /> Twibbon Link
                               </a>
                             </span>
                           </li>
@@ -361,8 +441,8 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                             <span className="mr-2">•</span>
                             <span>
                               Submit your essay via the following link{' '}
-                              <Link 
-                                href="/competitions/innovative-essay/submission" 
+                              <Link
+                                href="/competitions/innovative-essay/submission"
                                 className="text-[#0D6B6B] font-semibold underline hover:text-[#5BA8A6] transition-colors"
                               >
                                 Submission Form
@@ -382,7 +462,8 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                       <button
                         type="button"
                         onClick={handlePreviousStep}
-                        className="ml-147 px-8 py-2.5 text-[#0D6B6B] underline hover:text-[#5BA8A6] transition-colors text-[18px] font-bold"
+                        disabled={isLoading}
+                        className="ml-147 px-8 py-2.5 text-[#0D6B6B] underline hover:text-[#5BA8A6] transition-colors text-[18px] font-bold disabled:opacity-50"
                       >
                         Previous
                       </button>
@@ -404,14 +485,14 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                         disabled={isLoading}
                         className="ml-auto px-10 py-2.5 bg-gradient-to-r from-[#03695E] to-[#6EAF5F] text-white rounded-full font-semibold hover:text-[#5BA8A6] transition-colors duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-[14px]"
                       >
-                        {isLoading ? 'Submitting...' : 'Submit'}
+                        {isLoading ? 'Uploading & Submitting...' : 'Submit'}
                       </button>
                     )}
                   </div>
                 </form>
               </div>
 
-              {/* Step Indicator - Attached to right edge */}
+              {/* Step Indicator - Right edge */}
               <div className="hidden lg:flex flex-col border-2 border-[#000000] w-[80px] rounded-r-3xl overflow-hidden">
                 {[
                   { step: 1, label: 'Step 1' },
@@ -433,12 +514,9 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                           : 'bg-[#E6E9D8] text-black opacity-15 shadow hover:bg-[#E6E9D8] hover:opacity-30'
                       }
                     `}
-                    style={{
-                      writingMode: 'vertical-rl',
-                      textOrientation: 'mixed',
-                    }}
+                    style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
                     onClick={() => {
-                      if (item.step <= currentStep) {
+                      if (item.step <= currentStep && !isLoading) {
                         setCurrentStep(item.step as FormStep);
                       }
                     }}
@@ -475,7 +553,8 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
   );
 }
 
-// Reusable Student Info Fields Component
+// ─── Reusable Student Info Fields ─────────────────────────────────────────────
+
 interface StudentInfoFieldsProps {
   register: any;
   errors: any;
@@ -485,7 +564,6 @@ interface StudentInfoFieldsProps {
 function StudentInfoFields({ register, errors, prefix }: StudentInfoFieldsProps) {
   return (
     <div className="space-y-4">
-      {/* Full Name */}
       <div>
         <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
           Full Name<span className="text-red-500">*</span>
@@ -501,7 +579,6 @@ function StudentInfoFields({ register, errors, prefix }: StudentInfoFieldsProps)
         )}
       </div>
 
-      {/* NIM/NPM */}
       <div>
         <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
           Students&apos; Number (NIM/NPM)<span className="text-red-500">*</span>
@@ -517,7 +594,6 @@ function StudentInfoFields({ register, errors, prefix }: StudentInfoFieldsProps)
         )}
       </div>
 
-      {/* Phone Number */}
       <div>
         <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
           Phone Number (Whatsapp)<span className="text-red-500">*</span>
@@ -533,7 +609,6 @@ function StudentInfoFields({ register, errors, prefix }: StudentInfoFieldsProps)
         )}
       </div>
 
-      {/* Line ID */}
       <div>
         <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
           Line ID<span className="text-red-500">*</span>
@@ -549,7 +624,6 @@ function StudentInfoFields({ register, errors, prefix }: StudentInfoFieldsProps)
         )}
       </div>
 
-      {/* Email */}
       <div>
         <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
           Email<span className="text-red-500">*</span>
@@ -565,7 +639,6 @@ function StudentInfoFields({ register, errors, prefix }: StudentInfoFieldsProps)
         )}
       </div>
 
-      {/* University */}
       <div>
         <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
           University<span className="text-red-500">*</span>
@@ -581,7 +654,6 @@ function StudentInfoFields({ register, errors, prefix }: StudentInfoFieldsProps)
         )}
       </div>
 
-      {/* Major */}
       <div>
         <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
           Major<span className="text-red-500">*</span>
