@@ -1078,31 +1078,38 @@ const NTC: NextPage = () => {
           </div>
 
           {/* Buttons Container */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 lg:gap-12">
+          <div className="flex flex-col sm:flex-row items-start justify-center gap-6 sm:gap-8 lg:gap-12">
             
             {/* Register Now Button */}
-            <button
-              onClick={() => router.push('/competitions/national-tender/register')}
-              className="
-                w-full sm:w-auto
-                bg-[#03695E]
-                hover:bg-[#025a51]
-                text-[#F4E5A2]
-                font-bold
-                py-6 px-12 sm:px-16 lg:px-20
-                rounded-full
-                text-[28px] sm:text-[32px] lg:text-[40px]
-                font-[var(--font-gretaros)]
-                transition-all duration-300
-                hover:scale-105
-                shadow-[0_10px_30px_rgba(0,0,0,0.4)]
-                border-[3px] border-[#f4e5a2]
-                text-center
-                tracking-wide
-              "
-            >
-              REGISTER NOW
-            </button>
+            <div className="flex flex-col items-center gap-3">
+              <button
+                disabled
+                className="
+                  w-full sm:w-auto
+                  bg-[#6b7280]
+                  text-[#d1d5db]
+                  font-bold
+                  py-6 px-12 sm:px-16 lg:px-20
+                  rounded-full
+                  text-[28px] sm:text-[32px] lg:text-[40px]
+                  font-[var(--font-gretaros)]
+                  shadow-[0_10px_30px_rgba(0,0,0,0.2)]
+                  border-[3px] border-[#9ca3af]
+                  text-center
+                  tracking-wide
+                  cursor-not-allowed
+                  opacity-60
+                "
+              >
+                REGISTER NOW
+              </button>
+
+              <p className="text-[20px] text-[#03695E] italic text-center max-w-[320px] leading-snug">
+                Registration is now closed.
+                <br />
+                We are no longer accepting new responses.
+              </p>
+            </div>
 
             {/* Submission Button */}
             <button
