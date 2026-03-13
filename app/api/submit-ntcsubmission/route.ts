@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { uploadFileToDrive } from '@/lib/google-drive';
 import {
   formatDataForSheets,
   triggerSheetsUpdate,
 } from '@/lib/google-sheets-webhook';
+
+export const runtime = 'nodejs';
 
 export async function GET() {
   return NextResponse.json({
@@ -20,100 +21,43 @@ export async function POST(request: NextRequest) {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    const formData = await request.formData();
+    // Terima JSON bukan FormData
+    const body = await request.json();
 
-    // =========================
-    // TEXT FIELDS
-    // =========================
-    const teamName = formData.get('teamName') as string;
-    const fullName = formData.get('fullName') as string;
-    const nim = formData.get('nim') as string;
-    const phoneNumber = formData.get('phoneNumber') as string;
-    const lineId = formData.get('lineId') as string;
-    const email = formData.get('email') as string;
-    const university = formData.get('university') as string;
+    const {
+      teamName,
+      fullName,
+      nim,
+      phoneNumber,
+      lineId,
+      email,
+      university,
+      proposalFileId,
+      proposalFileUrl,
+      boqFileId,
+      boqFileUrl,
+    } = body;
 
-    // =========================
-    // FILES
-    // =========================
-    const proposalPdf = formData.get('proposalPdf');
-    const boqFile = formData.get('boqFile');
+    // Validation
+    const missing: string[] = [];
+    if (!teamName) missing.push('teamName');
+    if (!fullName) missing.push('fullName');
+    if (!nim) missing.push('nim');
+    if (!phoneNumber) missing.push('phoneNumber');
+    if (!lineId) missing.push('lineId');
+    if (!email) missing.push('email');
+    if (!university) missing.push('university');
+    if (!proposalFileId) missing.push('proposalFileId');
+    if (!boqFileId) missing.push('boqFileId');
 
-    // =========================
-    // BASIC VALIDATION
-    // =========================
-    if (!teamName || !fullName || !nim || !phoneNumber || !lineId || !email || !university) {
+    if (missing.length) {
       return NextResponse.json(
-        { success: false, message: 'Missing required fields' },
+        { success: false, message: `Missing: ${missing.join(', ')}` },
         { status: 400 }
       );
     }
 
-    // =========================
-    // PDF VALIDATION
-    // =========================
-    if (!proposalPdf || !(proposalPdf instanceof File)) {
-      return NextResponse.json(
-        { success: false, message: 'Proposal PDF is required' },
-        { status: 400 }
-      );
-    }
-
-    if (proposalPdf.type !== 'application/pdf') {
-      return NextResponse.json(
-        { success: false, message: 'Proposal file must be PDF' },
-        { status: 400 }
-      );
-    }
-
-    // =========================
-    // BOQ EXCEL VALIDATION
-    // =========================
-    if (!boqFile || !(boqFile instanceof File)) {
-      return NextResponse.json(
-        { success: false, message: 'BOQ Excel file is required' },
-        { status: 400 }
-      );
-    }
-
-    const excelMime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-
-    if (boqFile.type !== excelMime) {
-      return NextResponse.json(
-        { success: false, message: 'BOQ file must be .xlsx format' },
-        { status: 400 }
-      );
-    }
-
-    // =========================
-    // CONVERT TO BUFFER
-    // =========================
-    const pdfBuffer = Buffer.from(await proposalPdf.arrayBuffer());
-    const boqBuffer = Buffer.from(await boqFile.arrayBuffer());
-
-    // =========================
-    // UPLOAD PDF TO DRIVE
-    // =========================
-    const pdfUpload = await uploadFileToDrive(
-      pdfBuffer,
-      `${teamName}_NTC_Proposal_${Date.now()}.pdf`,
-      'application/pdf',
-      process.env.GOOGLE_DRIVE_FOLDER_ID!
-    );
-
-    // =========================
-    // UPLOAD BOQ EXCEL TO DRIVE
-    // =========================
-    const boqUpload = await uploadFileToDrive(
-      boqBuffer,
-      `${teamName}_NTC_BOQ_${Date.now()}.xlsx`,
-      excelMime,
-      process.env.GOOGLE_DRIVE_FOLDER_ID!
-    );
-
-    // =========================
-    // SAVE TO DATABASE
-    // =========================
+    // Save to Supabase
     const { data, error } = await supabase
       .from('ntc_submission')
       .insert({
@@ -124,15 +68,10 @@ export async function POST(request: NextRequest) {
         line_id: lineId,
         email,
         university,
-
-        // PDF
-        proposal_file_id: pdfUpload.id,
-        proposal_file_url: pdfUpload.webViewLink,
-
-        // BOQ EXCEL
-        boq_file_id: boqUpload.id,
-        boq_file_url: boqUpload.webViewLink,
-
+        proposal_file_id: proposalFileId,
+        proposal_file_url: proposalFileUrl,
+        boq_file_id: boqFileId,
+        boq_file_url: boqFileUrl,
         created_at: new Date().toISOString(),
       })
       .select()
@@ -146,9 +85,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // =========================
-    // UPDATE GOOGLE SHEETS
-    // =========================
+    // Google Sheets
     if (process.env.GOOGLE_SHEETS_WEBHOOK_URL_NTC_SUBMISSIONS) {
       try {
         const payload = formatDataForSheets('ntc-submission', {
@@ -159,8 +96,8 @@ export async function POST(request: NextRequest) {
           lineId,
           email,
           university,
-          proposalPdfUrl: pdfUpload.webViewLink,
-          boqFileUrl: boqUpload.webViewLink,
+          proposalPdfUrl: proposalFileUrl,
+          boqFileUrl,
         });
 
         await triggerSheetsUpdate(
@@ -168,7 +105,6 @@ export async function POST(request: NextRequest) {
           payload
         );
       } catch (sheetsError) {
-        // Log error but don't fail the request
         console.error('Google Sheets update error:', sheetsError);
       }
     }
@@ -176,10 +112,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'NTC submission successful',
-      data: { 
+      data: {
         id: data.id,
-        proposalPdfUrl: pdfUpload.webViewLink,
-        boqFileUrl: boqUpload.webViewLink,
+        submittedAt: data.created_at,
+        proposalFileUrl,
+        boqFileUrl,
       },
     });
 

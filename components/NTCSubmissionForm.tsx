@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ntcSubmissionFormSchema, type NtcSubmissionFormInput } from '@/lib/validations';
 import { useRouter } from 'next/navigation';
+import { uploadFileToGoogleDrive } from '@/lib/client-drive-upload';
 
 type FormStep = 1 | 2;
 
@@ -20,6 +21,10 @@ export function NTCSubmissionForm() {
 
   const [selectedPdfFile, setSelectedPdfFile] = useState<File | null>(null);
   const [selectedBoqFile, setSelectedBoqFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<{ proposal: number; boq: number }>({
+    proposal: 0,
+    boq: 0,
+  });
 
   const {
     register,
@@ -32,79 +37,63 @@ export function NTCSubmissionForm() {
     mode: 'onChange',
   });
 
-const onSubmit = async (data: NtcSubmissionFormInput) => {
-  setIsLoading(true);
-  setSubmitStatus(null);
+  const onSubmit = async (data: NtcSubmissionFormInput) => {
+    setIsLoading(true);
+    setSubmitStatus(null);
+    setUploadProgress({ proposal: 0, boq: 0 });
 
-  try {
-    // Zod schema sudah handle validasi file, jadi kita langsung proses
+    try {
+      // Upload Proposal PDF langsung ke Google Drive dari browser
+      const { fileId: proposalFileId, fileUrl: proposalFileUrl } =
+        await uploadFileToGoogleDrive(data.proposalPdf, (percent) =>
+          setUploadProgress((prev) => ({ ...prev, proposal: percent }))
+        );
 
-    const formData = new FormData();
+      // Upload BOQ Excel langsung ke Google Drive dari browser
+      const { fileId: boqFileId, fileUrl: boqFileUrl } =
+        await uploadFileToGoogleDrive(data.boqFile, (percent) =>
+          setUploadProgress((prev) => ({ ...prev, boq: percent }))
+        );
 
-    // Add fields
-    formData.append('teamName', data.teamName);
-    formData.append('fullName', data.fullName);
-    formData.append('nim', data.nim);
-    formData.append('phoneNumber', data.phoneNumber);
-    formData.append('lineId', data.lineId);
-    formData.append('email', data.email);
-    formData.append('university', data.university);
+      // Kirim metadata saja ke server (tanpa file)
+      const response = await fetch('/api/submit-ntcsubmission', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          teamName: data.teamName,
+          fullName: data.fullName,
+          nim: data.nim,
+          phoneNumber: data.phoneNumber,
+          lineId: data.lineId,
+          email: data.email,
+          university: data.university,
+          proposalFileId,
+          proposalFileUrl,
+          boqFileId,
+          boqFileUrl,
+        }),
+      });
 
-    // Add files
-    formData.append('proposalPdf', data.proposalPdf);
-    formData.append('boqFile', data.boqFile);
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Failed to submit form');
 
-    console.log('Submitting to:', '/api/submit-ntcsubmission');
-    
-    const response = await fetch('/api/submit-ntcsubmission', {
-      method: 'POST',
-      body: formData,
-    });
+      // Reset form
+      reset();
+      setSelectedPdfFile(null);
+      setSelectedBoqFile(null);
 
-    console.log('Response status:', response.status);
-    console.log('Response content-type:', response.headers.get('content-type'));
+      // Redirect to success page
+      router.push('/submission-ntc-success');
 
-    // ✅ Clone response sebelum consume, untuk bisa baca text dan json
-    const contentType = response.headers.get('content-type');
-    
-    if (!contentType || !contentType.includes('application/json')) {
-      // Get text from response
-      const text = await response.text();
-      console.error('Non-JSON response (status ' + response.status + '):', text.substring(0, 500));
-      
-      if (response.status === 404) {
-        throw new Error('API endpoint not found. Please restart the development server.');
-      }
-      
-      throw new Error(`Server error (${response.status}): Invalid response format.`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An error occurred';
+      console.error('Submit error:', message);
+      setSubmitStatus({ type: 'error', message });
+    } finally {
+      setIsLoading(false);
+      setUploadProgress({ proposal: 0, boq: 0 });
     }
-
-    // Now parse JSON
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to submit form');
-    }
-
-    // Reset form
-    reset();
-    setSelectedPdfFile(null);
-    setSelectedBoqFile(null);
-
-    // Redirect to success page
-    router.push('/submission-ntc-success');
-    
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'An error occurred';
-    console.error('Submit error:', message);
-    setSubmitStatus({
-      type: 'error',
-      message,
-    });
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const handlePreviousStep = () => {
     if (currentStep > 1) {
@@ -184,8 +173,8 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                           Team Leader
                         </h4>
 
-                        {/* Full Name */}
                         <div className="space-y-3 sm:space-y-4">
+                          {/* Full Name */}
                           <div>
                             <label className="block text-[13px] sm:text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
                               Full Name<span className="text-red-500">*</span>
@@ -274,7 +263,6 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                               <p className="text-red-500 text-xs mt-1">{errors.university.message}</p>
                             )}
                           </div>
-
                         </div>
                       </div>
                     </div>
@@ -332,7 +320,7 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                         />
                         <p className="text-gray-600 text-[12px] sm:text-[14px] mt-1 text-justify">
                           format penamaan : BoQ_Nama Tim_Universitas <br/>
-                          (Contoh : BoQ_CENS_Univeristas Indonesia). <br/> 
+                          (Contoh : BoQ_CENS_Univeristas Indonesia). <br/>
                           Max 100MB
                         </p>
                         {selectedBoqFile && (
@@ -344,6 +332,34 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                           <p className="text-red-500 text-[12px] sm:text-[14px] mt-1">{String(errors.boqFile.message)}</p>
                         )}
                       </div>
+
+                      {/* Upload Progress */}
+                      {isLoading && (uploadProgress.proposal > 0 || uploadProgress.boq > 0) && (
+                        <div className="space-y-2">
+                          <div>
+                            <p className="text-[#0D6B6B] text-sm mb-1">
+                              Uploading Proposal... {uploadProgress.proposal}%
+                            </p>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div
+                                className="bg-[#0D6B6B] h-2 rounded-full transition-all duration-300"
+                                style={{ width: `${uploadProgress.proposal}%` }}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <p className="text-[#0D6B6B] text-sm mb-1">
+                              Uploading BOQ... {uploadProgress.boq}%
+                            </p>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div
+                                className="bg-[#0D6B6B] h-2 rounded-full transition-all duration-300"
+                                style={{ width: `${uploadProgress.boq}%` }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -375,13 +391,12 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                         disabled={isLoading}
                         className="sm:ml-auto px-8 sm:px-10 py-2 sm:py-2.5 bg-gradient-to-r from-[#03695E] to-[#6EAF5F] text-white rounded-full font-semibold hover:text-[#5BA8A6] transition-colors duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-[13px] sm:text-[14px] order-1 sm:order-2"
                       >
-                        {isLoading ? 'Submitting...' : 'Submit'}
+                        {isLoading ? 'Uploading...' : 'Submit'}
                       </button>
                     )}
                   </div>
                 </form>
               </div>
-
             </div>
           </div>
         </div>

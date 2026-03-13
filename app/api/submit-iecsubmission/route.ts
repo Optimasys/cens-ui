@@ -9,16 +9,10 @@ import {
 /**
  * GET /api/submit-iecsubmission
  */
-export async function GET() {
-  return NextResponse.json({
-    success: true,
-    message: 'IEC Submission API is running',
-  });
-}
+// app/api/submit-iecsubmission/route.ts
 
-/**
- * POST /api/submit-iecsubmission
- */
+export const runtime = 'nodejs';
+
 export async function POST(request: NextRequest) {
   try {
     const supabase = createClient(
@@ -26,22 +20,14 @@ export async function POST(request: NextRequest) {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    const formData = await request.formData();
+    // Terima JSON bukan FormData
+    const body = await request.json();
 
-    // ===== Extract fields (NULL SAFE) =====
-    const teamName = String(formData.get('teamName') || '');
-    const fullName = String(formData.get('fullName') || '');
-    const nim = String(formData.get('nim') || '');
-    const phoneNumber = String(formData.get('phoneNumber') || '');
-    const lineId = String(formData.get('lineId') || '');
-    const email = String(formData.get('email') || '');
-    const university = String(formData.get('university') || '');
-    const subtheme = String(formData.get('subtheme') || '');
-    const essayPDF = formData.get('essayPDF');
+    const { teamName, fullName, nim, phoneNumber, lineId,
+            email, university, subtheme, fileId, fileUrl, fileName } = body;
 
-    // ===== Validation =====
+    // Validation
     const missing: string[] = [];
-
     if (!teamName) missing.push('teamName');
     if (!fullName) missing.push('fullName');
     if (!nim) missing.push('nim');
@@ -50,6 +36,7 @@ export async function POST(request: NextRequest) {
     if (!email) missing.push('email');
     if (!university) missing.push('university');
     if (!subtheme) missing.push('subtheme');
+    if (!fileId) missing.push('fileId');
 
     if (missing.length) {
       return NextResponse.json(
@@ -58,38 +45,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!essayPDF || !(essayPDF instanceof File)) {
-      return NextResponse.json(
-        { success: false, message: 'Essay PDF required' },
-        { status: 400 }
-      );
-    }
-
-    if (essayPDF.type !== 'application/pdf') {
-      return NextResponse.json(
-        { success: false, message: 'File must be PDF' },
-        { status: 400 }
-      );
-    }
-
-    if (essayPDF.size > 100 * 1024 * 1024) {
-      return NextResponse.json(
-        { success: false, message: 'Max file size 100MB' },
-        { status: 400 }
-      );
-    }
-
-    // ===== Upload to Drive =====
-    const buffer = Buffer.from(await essayPDF.arrayBuffer());
-
-    const driveResponse = await uploadFileToDrive(
-      buffer,
-      `iec-${teamName}-${Date.now()}.pdf`,
-      'application/pdf',
-      process.env.GOOGLE_DRIVE_FOLDER_ID!
-    );
-
-    // ===== Save to Supabase =====
+    // Save to Supabase (file sudah di Drive, tinggal simpan metadata)
     const { data, error } = await supabase
       .from('iec_submission')
       .insert({
@@ -101,28 +57,20 @@ export async function POST(request: NextRequest) {
         email,
         university,
         subtheme,
-        file_id: driveResponse.id,
-        file_url: driveResponse.webViewLink,
+        file_id: fileId,
+        file_url: fileUrl,
       })
       .select()
       .single();
 
     if (error) throw error;
 
-    // ===== Google Sheets =====
+    // Google Sheets
     if (process.env.GOOGLE_SHEETS_WEBHOOK_URL_IEC_SUBMISSIONS) {
       const payload = formatDataForSheets('iec-submission', {
-        teamName,
-        fullName,
-        nim,
-        phoneNumber,
-        lineId,
-        email,
-        university,
-        subtheme,
-        fileUrl: driveResponse.webViewLink,
+        teamName, fullName, nim, phoneNumber, lineId,
+        email, university, subtheme, fileUrl,
       });
-
       await triggerSheetsUpdate(
         process.env.GOOGLE_SHEETS_WEBHOOK_URL_IEC_SUBMISSIONS,
         payload
@@ -132,15 +80,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'IEC submission successful',
-      data: {
-        id: data.id,
-        submittedAt: data.created_at,
-      },
+      data: { id: data.id, submittedAt: data.created_at },
     });
 
   } catch (error) {
     console.error(error);
-
     return NextResponse.json(
       {
         success: false,

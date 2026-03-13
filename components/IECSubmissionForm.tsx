@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { iecSubmissionFormSchema, type IecSubmissionFormInput } from '@/lib/validations';
 import { useRouter } from 'next/navigation';
+import { uploadFileToGoogleDrive } from '@/lib/client-drive-upload';
 
 type FormStep = 1 | 2;
 
@@ -19,6 +20,7 @@ export function IECSubmissionForm() {
   } | null>(null);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const {
     register,
@@ -34,63 +36,57 @@ export function IECSubmissionForm() {
   const onSubmit = async (data: IecSubmissionFormInput) => {
     setIsLoading(true);
     setSubmitStatus(null);
+    setUploadProgress(0);
 
     try {
-      // Manual file validation
-      if (!data.essayPdf) {
+      if (!data.essayPdf || !(data.essayPdf instanceof File)) {
         throw new Error('Essay PDF is required');
-      }
-      if (!(data.essayPdf instanceof File)) {
-        throw new Error('Essay PDF is not a valid file');
-      }
-      if (data.essayPdf.size > 100 * 1024 * 1024) {
-        throw new Error('Essay PDF size must be less than 100MB');
       }
       if (data.essayPdf.type !== 'application/pdf') {
         throw new Error('Essay must be a PDF file');
       }
+      if (data.essayPdf.size > 100 * 1024 * 1024) {
+        throw new Error('Essay PDF size must be less than 100MB');
+      }
 
-      const formData = new FormData();
+      // Upload langsung ke Google Drive dari browser
+      const { fileId, fileUrl } = await uploadFileToGoogleDrive(
+        data.essayPdf,
+        (percent) => setUploadProgress(percent)
+      );
 
-      // Add fields
-      formData.append('teamName', data.teamName);
-      formData.append('fullName', data.fullName);
-      formData.append('nim', data.nim);
-      formData.append('phoneNumber', data.phoneNumber);
-      formData.append('lineId', data.lineId);
-      formData.append('email', data.email);
-      formData.append('university', data.university);
-      formData.append('subtheme', data.subtheme);
-
-      // Add file
-      formData.append('essayPDF', data.essayPdf);
-
+      // Kirim metadata saja ke server (tanpa file)
       const response = await fetch('/api/submit-iecsubmission', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          teamName: data.teamName,
+          fullName: data.fullName,
+          nim: data.nim,
+          phoneNumber: data.phoneNumber,
+          lineId: data.lineId,
+          email: data.email,
+          university: data.university,
+          subtheme: data.subtheme,
+          fileId,
+          fileUrl,
+          fileName: data.essayPdf.name,
+        }),
       });
 
       const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Failed to submit');
 
-      if (!response.ok) {
-        throw new Error(result.message || 'Failed to submit form');
-      }
-
-      // Reset form
       reset();
       setSelectedFile(null);
-
-      // Redirect to success page
       router.push('/submission-iec-success');
+
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An error occurred';
-      console.error('Submit error:', message);
-      setSubmitStatus({
-        type: 'error',
-        message,
-      });
+      setSubmitStatus({ type: 'error', message });
     } finally {
       setIsLoading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -172,8 +168,8 @@ export function IECSubmissionForm() {
                           Team Leader
                         </h4>
 
-                        {/* Full Name */}
                         <div className="space-y-4">
+                          {/* Full Name */}
                           <div>
                             <label className="block text-[14px] font-semibold text-[#0D6B6B] mb-1.5">
                               Full Name<span className="text-red-500">*</span>
@@ -288,7 +284,7 @@ export function IECSubmissionForm() {
                       {/* Essay PDF */}
                       <div>
                         <label htmlFor="essayPdf" className="block text-[18px] font-semibold text-[#0D6B6B] mb-1.5">
-                        Final Essay Submission (PDF)
+                          Final Essay Submission (PDF)
                         </label>
                         <input
                           id="essayPdf"
@@ -316,6 +312,19 @@ export function IECSubmissionForm() {
                           <p className="text-red-500 text-[14px] mt-1">{String(errors.essayPdf.message)}</p>
                         )}
                       </div>
+
+                      {/* Upload Progress */}
+                      {isLoading && uploadProgress > 0 && (
+                        <div className="mt-4">
+                          <p className="text-[#0D6B6B] text-sm mb-1">Uploading... {uploadProgress}%</p>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              className="bg-[#0D6B6B] h-2 rounded-full transition-all duration-300"
+                              style={{ width: `${uploadProgress}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -347,13 +356,12 @@ export function IECSubmissionForm() {
                         disabled={isLoading}
                         className="ml-auto px-10 py-2.5 bg-gradient-to-r from-[#03695E] to-[#6EAF5F] text-white rounded-full font-semibold hover:text-[#5BA8A6] transition-colors duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-[14px]"
                       >
-                        {isLoading ? 'Submitting...' : 'Submit'}
+                        {isLoading ? 'Uploading...' : 'Submit'}
                       </button>
                     )}
                   </div>
                 </form>
               </div>
-
             </div>
           </div>
         </div>
