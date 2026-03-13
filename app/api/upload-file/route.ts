@@ -29,7 +29,7 @@ const FILE_SUFFIX: Record<FileType, string> = {
 };
 
 // Max file size: 20MB (adjust as needed)
-const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024;
+const MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024;
 
 export async function POST(request: NextRequest) {
   try {

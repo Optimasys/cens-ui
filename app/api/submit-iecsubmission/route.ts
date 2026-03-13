@@ -72,9 +72,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (essayPDF.size > 10 * 1024 * 1024) {
+    if (essayPDF.size > 100 * 1024 * 1024) {
       return NextResponse.json(
-        { success: false, message: 'Max file size 10MB' },
+        { success: false, message: 'Max file size 100MB' },
         { status: 400 }
       );
     }
