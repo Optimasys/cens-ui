@@ -301,7 +301,7 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                           }}
                           className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[12px] sm:text-[14px] file:mr-2 sm:file:mr-3 file:py-1 sm:file:py-1.5 file:px-2 sm:file:px-4 file:rounded-md file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
                         />
-                        <p className="text-gray-600 text-[12px] sm:text-[14px] mt-1">Format: Team Name_NTC_Title.pdf (max 10MB)</p>
+                        <p className="text-gray-600 text-[12px] sm:text-[14px] mt-1">Format: Team Name_NTC_Title.pdf (max 100MB)</p>
                         {selectedPdfFile && (
                           <p className="text-green-600 text-[12px] sm:text-[14px] mt-1 break-all">
                             ✓ Selected: {selectedPdfFile.name}
@@ -333,7 +333,7 @@ const onSubmit = async (data: NtcSubmissionFormInput) => {
                         <p className="text-gray-600 text-[12px] sm:text-[14px] mt-1 text-justify">
                           format penamaan : BoQ_Nama Tim_Universitas <br/>
                           (Contoh : BoQ_CENS_Univeristas Indonesia). <br/> 
-                          Max 10MB
+                          Max 100MB
                         </p>
                         {selectedBoqFile && (
                           <p className="text-green-600 text-[12px] sm:text-[14px] mt-1 break-all">

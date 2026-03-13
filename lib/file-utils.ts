@@ -31,7 +31,7 @@ export function generateUniqueFileName(
 /**
  * Validate file size
  */
-export function isFileSizeValid(file: File, maxSizeMB: number = 10): boolean {
+export function isFileSizeValid(file: File, maxSizeMB: number = 100): boolean {
   const maxSizeBytes = maxSizeMB * 1024 * 1024;
   return file.size <= maxSizeBytes;
 }

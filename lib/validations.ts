@@ -87,8 +87,8 @@ export function validateFile(file: any): { valid: boolean; error?: string } {
     return { valid: false, error: 'Invalid file object' };
   }
 
-  if (file.size > 10 * 1024 * 1024) {
-    return { valid: false, error: 'File size must be less than 10MB' };
+  if (file.size > 100 * 1024 * 1024) {
+    return { valid: false, error: 'File size must be less than 100MB' };
   }
 
   if (file.type !== 'application/pdf') {
@@ -178,8 +178,8 @@ export const ntcSubmissionFormSchema = z.object({
       'Proposal must be a PDF file'
     )
     .refine(
-      (file) => file.size <= 10 * 1024 * 1024,
-      'PDF must be less than 10MB'
+      (file) => file.size <= 100 * 1024 * 1024,
+      'PDF must be less than 100MB'
     ),
 
   // ✅ EXCEL VALIDATION
@@ -192,11 +192,9 @@ export const ntcSubmissionFormSchema = z.object({
       'BOQ must be an Excel (.xlsx) file'
     )
     .refine(
-      (file) => file.size <= 10 * 1024 * 1024,
-      'Excel file must be less than 10MB'
+      (file) => file.size <= 100 * 1024 * 1024,
+      'Excel file must be less than 100MB'
     ),
 });
-
-
 
 export type NtcSubmissionFormInput = z.infer<typeof ntcSubmissionFormSchema>;

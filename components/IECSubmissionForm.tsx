@@ -43,8 +43,8 @@ export function IECSubmissionForm() {
       if (!(data.essayPdf instanceof File)) {
         throw new Error('Essay PDF is not a valid file');
       }
-      if (data.essayPdf.size > 10 * 1024 * 1024) {
-        throw new Error('Essay PDF size must be less than 10MB');
+      if (data.essayPdf.size > 100 * 1024 * 1024) {
+        throw new Error('Essay PDF size must be less than 100MB');
       }
       if (data.essayPdf.type !== 'application/pdf') {
         throw new Error('Essay must be a PDF file');
@@ -304,7 +304,7 @@ export function IECSubmissionForm() {
                           className="w-full px-4 py-2.5 border-2 border-[#0D6B6B] rounded-lg bg-white focus:outline-none focus:border-[#5BA8A6] transition-colors text-[14px] file:mr-3 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#5BA8A6] file:text-white hover:file:bg-[#4a9694] file:cursor-pointer"
                         />
                         <p className="text-gray-600 text-[14px] mt-1">File name for the essay must be written as:</p>
-                        <p className="text-gray-600 text-[14px] mt-1">IEC(No. Of Sub-Theme)_Team Name_University (max 10MB)</p>
+                        <p className="text-gray-600 text-[14px] mt-1">IEC(No. Of Sub-Theme)_Team Name_University (max 100MB)</p>
                         <p className="text-gray-600 text-[14px] mt-1">Example: IEC1_Cens_UI or IEC2_Cens_UI</p>
 
                         {selectedFile && (
