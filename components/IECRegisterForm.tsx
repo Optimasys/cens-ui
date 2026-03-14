@@ -61,11 +61,15 @@ async function uploadSingleFile(
   };
 }
 
+// Deadline: March 14, 2026 at 23:59:59 WIB (UTC+7)
+const REGISTRATION_DEADLINE = new Date('2026-03-14T23:59:59+07:00');
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<FormStep>(1);
+  const isClosed = new Date() > REGISTRATION_DEADLINE;
   const [isLoading, setIsLoading] = useState(false);
 
   const [uploadProgress, setUploadProgress] = useState<{
@@ -211,6 +215,30 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
     done: 'text-green-600',
     error: 'text-red-600',
   };
+
+  if (isClosed) {
+    return (
+      <div
+        className="min-h-screen py-8 px-4 bg-cover bg-center bg-no-repeat relative"
+        style={{ backgroundImage: 'url(/images/bg-register.png)' }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-[#219ACC] via-[#F4E5A2] to-[#219ACC] opacity-80 pointer-events-none" />
+        <div className="relative z-10 max-w-5xl mx-auto flex items-center justify-center min-h-[80vh]">
+          <div className="bg-[#E6E9D8] rounded-3xl shadow-2xl p-12 text-center">
+            <h2 className="text-[28px] lg:text-[32px] font-bold text-[#0D6B6B] mb-4 font-[var(--font-gretaros)]">
+              Registration Closed
+            </h2>
+            <p className="text-[16px] lg:text-[18px] text-[#0D6B6B] font-[var(--font-gretaros)]">
+              The IEC registration period has ended.
+            </p>
+            <p className="text-[14px] text-gray-600 mt-2">
+              Deadline: 14 March 2026, 23:59 WIB
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -463,7 +491,7 @@ export function IECRegisterForm({ competitionType }: CompetitionFormProps) {
                         type="button"
                         onClick={handlePreviousStep}
                         disabled={isLoading}
-                        className="ml-147 px-8 py-2.5 text-[#0D6B6B] underline hover:text-[#5BA8A6] transition-colors text-[18px] font-bold disabled:opacity-50"
+                        className="ml-147 px-8 py-2.5 text-[#0D6B6B] underline hover:text-[#5BA8A6] transition-colors text-[18px] disabled:opacity-50"
                       >
                         Previous
                       </button>
